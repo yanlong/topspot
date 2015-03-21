@@ -10,3 +10,7 @@ Router.route('/api/topics/:id?', {where: 'server'})
 .post(function () {
     this.response.end('post request\n');
 });
+
+Router.route('/', function () {
+    this.response.end('hello')
+})
