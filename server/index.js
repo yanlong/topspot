@@ -7,9 +7,18 @@ if (Meteor.isServer) {
     Meteor.startup(function() {
 
         // Global configuration
-        Restivus.configure({});
+        Restivus.configure({
+          useAuth: true
+      });
 
 
-        Restivus.addCollection(Topics);
+        Restivus.addCollection(Meteor.users);
+
+        Restivus.addCollection(Topics, {
+            routeOptions: {
+                authRequired: true,
+                roleRequired: 'admin'
+            },
+        });
     });
 }
