@@ -26,7 +26,24 @@ if (Meteor.isServer) {
 
                 },
                 get: {
-                    authRequired: true,
+                    // authRequired: true,
+                    // roleRequired: 'admin'
+                }
+            }
+        });
+        Restivus.addCollection(Bets, {
+            routeOptions: {
+                // authRequired: true,
+                // roleRequired: 'admin'
+            },
+            endpoints: {
+                getAll: {
+                    // authRequired: true,
+                    // roleRequired: 'admin'
+
+                },
+                get: {
+                    // authRequired: true,
                     // roleRequired: 'admin'
                 }
             }
@@ -35,9 +52,13 @@ if (Meteor.isServer) {
             get: function() { 
                 var option = {
                     topic: this.params.topicId,
-                    _id: this.params.betId,
                 }
-                return this.params.betId == null ? Bets.find(option).fetch() : (Bets.findOne(option)||{});
+                var id = this.params.betId;
+                if (id) {
+                    option._id = id;
+                    return Bets.findOne(option);
+                } 
+                return Bets.find(option).fetch();
             }
         })
     });
