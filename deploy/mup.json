@@ -1,0 +1,21 @@
+{
+  //server authentication info
+  "servers": [{
+    "host": "182.92.9.182",
+    "username": "root",
+    "password": "Caogen123",
+    //or pem file (ssh based authentication)
+    "pem": "~/.ssh/id_rsa"
+  }],
+
+  //install MongoDB in the server
+  "setupMongo": true,
+
+  //location of app (local directory)
+  "app": "/home/work/topspot",
+
+  //configure environmental
+  "env": {
+    // "ROOT_URL": "http://supersite.com"
+  }
+}
