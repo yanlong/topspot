@@ -23,6 +23,33 @@ if (Meteor.isServer) {
                 getAll: {
                     // authRequired: true,
                     // roleRequired: 'admin'
+                    action: function () {
+                        var option = {
+                            // sort: '_id',
+                            limit: 10,
+                            skip: 0,
+                        };
+                        var selector = {
+                            user: null,
+                            status: 'open',
+                            title: null,
+                        }
+                        var self = this
+                        _.each(option, function (v,k) {
+                            if (self.queryParams[k]) {
+                                option[k] = parseInt(self.queryParams[k]);
+                            }
+                        })
+                        var selector = _.reduce(selector, function (memo,v,k) {
+                            if (self.queryParams[k]) {
+                                memo[k] = self.queryParams[k];
+                            }
+                            return memo;
+                        }, {})
+                        // return selector;
+                        var topics = Topics.find(selector, option).fetch()
+                        return {status: 'success', data: topics};
+                    }
 
                 },
                 get: {
