@@ -1,0 +1,3 @@
+[submodule "packages/restivus"]
+	path = packages/restivus
+	url = git@github.com:yanlong/meteor-restivus.git
