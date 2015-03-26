@@ -26,7 +26,7 @@
   "appName": "meteor",
 
   // Location of app (local directory)
-  "app": "/path/to/the/app",
+  "app": "~/work/meteor/topspot",
 
   // Configure environment
   "env": {
