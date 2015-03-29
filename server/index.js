@@ -1,6 +1,3 @@
-Items = new Mongo.Collection('items');
-// Topics = new Mongo.Collection('topics');
-
 if (Meteor.isServer) {
 
     // API must be configured and built after startup!
@@ -23,32 +20,18 @@ if (Meteor.isServer) {
                 getAll: {
                     // authRequired: true,
                     // roleRequired: 'admin'
-                    action: function () {
-                        var option = {
-                            // sort: '_id',
-                            limit: 10,
-                            skip: 0,
-                        };
-                        var selector = {
+                    action: function() {
+                        var query = {
                             user: null,
                             status: 'open',
                             title: null,
+                            subtitle: null,
                         }
-                        var self = this
-                        _.each(option, function (v,k) {
-                            if (self.queryParams[k]) {
-                                option[k] = parseInt(self.queryParams[k]);
-                            }
-                        })
-                        var selector = _.reduce(selector, function (memo,v,k) {
-                            if (self.queryParams[k]) {
-                                memo[k] = self.queryParams[k];
-                            }
-                            return memo;
-                        }, {})
-                        // return selector;
-                        var topics = Topics.find(selector, option).fetch()
-                        return {status: 'success', data: topics};
+                        var topics = getAll.call(this, Topics, null, query);
+                        return {
+                            status: 'success',
+                            data: topics
+                        };
                     }
 
                 },
@@ -76,17 +59,65 @@ if (Meteor.isServer) {
             }
         });
         Restivus.addRoute('topics/:topicId/bets/:betId?', {}, {
-            get: function() { 
-                var option = {
-                    topic: this.params.topicId,
+            get: function() {
+                var query = {
+                    user: null,
+                    status: null,
                 }
-                var id = this.params.betId;
-                if (id) {
-                    option._id = id;
-                    return Bets.findOne(option);
-                } 
-                return Bets.find(option).fetch();
+                return layerRoute.call(this, Bets, 'betId', {
+                    topic: 'topicId'
+                }, query);
+            }
+        })
+        Restivus.addRoute('topics/:topicId/comments/:commentId?', {}, {
+            get: function() {
+                var query = {
+                    user: null,
+                }
+                return layerRoute.call(this, Comments, 'commentId', {
+                    topic: 'topicId'
+                }, query);
             }
         })
     });
+}
+
+function layerRoute(collection, id, selector, query) {
+    var self = this;
+    var data = null;
+    _.each(selector, function(v, k) {
+        selector[k] = self.params[v];
+    })
+    var id = this.params[id];
+    if (id) {
+        selector._id = id;
+        data = collection.findOne(selector);
+    } else {
+        data = getAll.call(this, collection, selector, query)
+    }
+    return { status: 'success', data: data};
+}
+
+function getAll(collection, selector, query) {
+    selector = selector || {};
+    var option = {
+        // sort: 'mtime',
+        limit: 20,
+        skip: 0,
+    };
+
+    var self = this
+    _.each(option, function(v, k) {
+        if (self.queryParams[k]) {
+            option[k] = parseInt(self.queryParams[k]);
+        }
+    })
+    var query = _.reduce(query, function(memo, v, k) {
+        if (self.queryParams[k]) {
+            memo[k] = self.queryParams[k];
+        }
+        return memo;
+    }, {})
+    selector = _.extend(selector, query);
+    return collection.find(selector, option).fetch()
 }
