@@ -79,6 +79,17 @@ if (Meteor.isServer) {
                 }, query);
             }
         })
+        Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {}, {
+            get: function() {
+                var query = {
+                    user: null,
+                }
+                return layerRoute.call(this, Favors, 'favorId', {
+                    // topic: 'topicId',
+                    comment: 'commentId',
+                }, query);
+            }
+        })
     });
 }
 
