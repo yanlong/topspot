@@ -5,17 +5,19 @@
 系统输出一套RESTful风格的HTTP API供客户端调用，以实现对系统中各种资源（实体、模型）的列举、查询、新增、修改、删除操作。
 
 # 2、接口描述
-系统中的主要资源有：
+## 系统中的主要资源有：
 用户 users
 话题 topics
 投注 bets
 评论 comments
 赞 favors
 
-接口调用规则如下：
+## 接口调用规则如下：
+
 `${method} /api/${model}/${id}?`
 
 其中:
+
 ```
 ${method} 值为GET（列举、查询）、新增（POST）、修改（PUT）、删除（DELETE）
 ${model} 值为users、topics、bets
@@ -23,18 +25,22 @@ ${id} 为资源id，问号（？）表示在列举时需要省略次字段
 ```
 
 资源查询规则(目前支持查询话题，评论、赞， 查询条件只支持limit、skip)：
+
 ```
 /${resource_uri}?${field_name}=${field_value}&limit=${value}&skip=${value}
 ```
 
 新增接口
+
 ```
 /topics/:topicId/comments/:commentId?
 /topics/:topicId/comments/:commentId/favors/favorId?
 ```
 
 对象字段说明:
+
 通用字段: 
+
 ```
 {
 _id: 'hoYSbvMeT9aTuQdfD', // 对象唯一id
@@ -44,6 +50,7 @@ mtime: 1427679199613, // 对象修改时间
 ```
 
 话题topic: 
+
 ```
 {
     _id: "v72LQEx8GKdGocRsR",
@@ -67,6 +74,7 @@ mtime: 1427679199613, // 对象修改时间
 }
 ```
 评论comment: 
+
 ```
 {
     _id: "KKdXYcHr8nf2sBFoX",
@@ -79,6 +87,7 @@ mtime: 1427679199613, // 对象修改时间
 }
 ```
 点赞favor: 
+
 ```
 {
     _id: "zGrpNQSFQW7GjouGs",
@@ -89,6 +98,7 @@ mtime: 1427679199613, // 对象修改时间
 }
 ```
 下注bet: 
+
 ```
 {
 _id: "j9vZAqNM3MDLjdNMK",
