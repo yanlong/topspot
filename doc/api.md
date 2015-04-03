@@ -104,6 +104,7 @@ ${id} 为资源id，问号（？）表示在列举时需要省略次字段
 _id: "j9vZAqNM3MDLjdNMK",
 user: "zWKjGApAvk2z6tvpd",
 topic: "v72LQEx8GKdGocRsR",
+attitude: "postive", // 观点，(postive|negtive)
 price: 13, // 下注时话题的价格
 status: "open", // 状态, (open|close)
 ctime: 1427679198401,

@@ -38,7 +38,7 @@ if (Meteor.isServer) {
                 get: {
                     // authRequired: true,
                     // roleRequired: 'admin'
-                }
+                },
             }
         });
         Restivus.addCollection(Bets, {
