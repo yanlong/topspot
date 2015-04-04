@@ -88,6 +88,12 @@ Meteor.startup(function() {
             }, query);
         }
     })
+
+    Restivus.addRoute('topics/:topicId/ticker/', {}, {
+        get: function () {
+            return {last: Prices.current(this.params.topicId), date: Date.now()};
+        }
+    })
 });
 
 function layerRoute(collection, id, selector, query) {
