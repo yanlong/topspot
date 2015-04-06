@@ -37,6 +37,15 @@ Meteor.startup(function() {
                 // authRequired: true,
                 // roleRequired: 'admin'
             },
+            post: {
+                // authRequired: true,
+                action: function() {
+                    var selector = {
+                        user: this.userId,
+                    }
+                    return insert.call(this, Topics, selector);
+                }
+            }
         }
     });
     Restivus.addCollection(Bets, {
@@ -65,6 +74,13 @@ Meteor.startup(function() {
             return layerRoute.call(this, Bets, 'betId', {
                 topic: 'topicId'
             }, query);
+        },
+        post: function() {
+            var selector = {
+                user: this.userId,
+                topic: this.params.topicId,
+            }
+            return insert.call(this, Bets, selector);
         }
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId?', {}, {
@@ -90,30 +106,41 @@ Meteor.startup(function() {
     })
 
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
-        get: function () {
-            return {last: Prices.current(this.params.topicId), date: Date.now()};
+        get: function() {
+            return {
+                last: Prices.current(this.params.topicId),
+                date: Date.now()
+            };
         }
     })
     Restivus.addRoute('topics/:topicId/rank/', {}, {
-        get: function () {
+        get: function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
             var current = Prices.current(topic);
             var counter = {}
-            Bets.find({topic: topic}).forEach(function (doc, index) {
+            Bets.find({
+                topic: topic
+            }).forEach(function(doc, index) {
                 var user = doc.user;
                 if (!counter[user]) counter[user] = 0;
                 counter[user] += (doc.close || current) - doc.open;
             })
-            var scores = _.map(counter, function (v,k) {
-                return {user: k, scores: v};
+            var scores = _.map(counter, function(v, k) {
+                return {
+                    user: k,
+                    scores: v
+                };
             })
-            var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function (v) {
+            var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function(v) {
                 v.user = Meteor.users.findOne(v.user);
                 delete v.user.services;
                 return v;
             });
-            return { status:'success', data:tops};
+            return {
+                status: 'success',
+                data: tops
+            };
         }
     })
 });
@@ -131,7 +158,10 @@ function layerRoute(collection, id, selector, query) {
     } else {
         data = getAll.call(this, collection, selector, query)
     }
-    return { status: 'success', data: data};
+    return {
+        status: 'success',
+        data: data
+    };
 }
 
 function getAll(collection, selector, query) {
@@ -156,4 +186,14 @@ function getAll(collection, selector, query) {
     }, {})
     selector = _.extend(selector, query);
     return collection.find(selector, option).fetch()
+}
+
+function insert(collection, selector) {
+    var data = this.bodyParams;
+    _.extend(data, selector);
+    var id = collection.insert(data);
+    return {
+        status: 'success',
+        data: collection.findOne(id)
+    };
 }
