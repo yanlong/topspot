@@ -94,6 +94,28 @@ Meteor.startup(function() {
             return {last: Prices.current(this.params.topicId), date: Date.now()};
         }
     })
+    Restivus.addRoute('topics/:topicId/rank/', {}, {
+        get: function () {
+            var top = this.queryParams.top || 10;
+            var topic = this.params.topicId;
+            var current = Prices.current(topic);
+            var counter = {}
+            Bets.find({topic: topic}).forEach(function (doc, index) {
+                var user = doc.user;
+                if (!counter[user]) counter[user] = 0;
+                counter[user] += (doc.close || current) - doc.open;
+            })
+            var scores = _.map(counter, function (v,k) {
+                return {user: k, scores: v};
+            })
+            var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function (v) {
+                v.user = Meteor.users.findOne(v.user);
+                delete v.user.services;
+                return v;
+            });
+            return { status:'success', data:tops};
+        }
+    })
 });
 
 function layerRoute(collection, id, selector, query) {

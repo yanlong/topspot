@@ -112,7 +112,13 @@ mtime: 1427679198401
 }
 ```
 
-# 3、示例
+# 3、接口分类
+## 普通用户
+GET /api/topics 查询话题
+POST /api/topics/:id/bets 新增下注
+PUT /api/topics/:id/bets/:id 介绍下注
+
+# 4、示例
 话题列表：
 http://182.92.9.182/api/topics/
 
@@ -137,5 +143,52 @@ curl -X PUT -d '{"_id":"bSK7vYkrhibr67X3R","user":"CALgu2z2Hg7e3KTBB","title":"�
 ```
 
 
+当前价格：
+GET /api/topics/CKNHTco7Yq9u2jGeK/ticker
 
+```
+{
+    last: 518424,
+    date: 1428311953127
+}
+```
 
+当前话题用户积分排名：
+GET /api/topics/m3msp79GLFN4MRRRk/rank?top=10
+
+```
+{
+    "status": "success",
+    "data": [{
+        "user": {
+            "_id": "9xAFhwWuDg53Lwidi",
+            "createdAt": "2015-04-06T10:32:32.638Z",
+            "emails": [{
+                "address": "topspot0@gmail",
+                "verified": false
+            }]
+        },
+        "scores": 8221208
+    }, {
+        "user": {
+            "_id": "4XPs3nFWZN4LXRgNu",
+            "createdAt": "2015-04-06T10:32:32.759Z",
+            "emails": [{
+                "address": "topspot1@gmail",
+                "verified": false
+            }]
+        },
+        "scores": 7912610
+    }, {
+        "user": {
+            "_id": "vT3Yr2X734zTeGhSk",
+            "createdAt": "2015-04-06T10:32:32.862Z",
+            "emails": [{
+                "address": "topspot2@gmail",
+                "verified": false
+            }]
+        },
+        "scores": 7437879
+    }]
+}
+```
