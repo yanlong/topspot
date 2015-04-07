@@ -192,3 +192,23 @@ GET /api/topics/m3msp79GLFN4MRRRk/rank?top=10
     }]
 }
 ```
+
+用户关注与被关注接口：
+GET /api/(followers|following)?user=JsEstjX8g94GiSbM2
+```
+{
+    status: "success",
+    data: [
+        {
+            _id: "Eg4ymCsJptFNRWBiW",
+            user: "T7tytgbbSM4fFDcBa",
+            target: "JsEstjX8g94GiSbM2"
+            },
+        {
+            _id: "Pm4fF5ioTRAP7MtmK",
+            user: "wDzH4WoycWMoWu7Ms",
+            target: "JsEstjX8g94GiSbM2"
+        }
+    ]
+}
+```
