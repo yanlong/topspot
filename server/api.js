@@ -121,7 +121,7 @@ Meteor.startup(function() {
             var counter = {}
             Bets.find({
                 topic: topic
-            }).forEach(function(doc, index) {
+            }, {limit: 10000, sort: {mtime: -1}}).forEach(function(doc, index) {
                 var user = doc.user;
                 if (!counter[user]) counter[user] = 0;
                 counter[user] += (doc.close || current) - doc.open;
