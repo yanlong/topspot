@@ -1,4 +1,4 @@
-版本：v0.2
+版本：v0.5
 
 # 1、概述
 
@@ -144,9 +144,9 @@ curl -X PUT -d '{"_id":"bSK7vYkrhibr67X3R","user":"CALgu2z2Hg7e3KTBB","title":"�
 
 
 当前价格：
-GET /api/topics/CKNHTco7Yq9u2jGeK/ticker
 
 ```
+GET /api/topics/CKNHTco7Yq9u2jGeK/ticker
 {
     last: 518424,
     date: 1428311953127
@@ -154,9 +154,9 @@ GET /api/topics/CKNHTco7Yq9u2jGeK/ticker
 ```
 
 当前话题用户积分排名：
-GET /api/topics/m3msp79GLFN4MRRRk/rank?top=10
 
 ```
+GET /api/topics/m3msp79GLFN4MRRRk/rank?top=10
 {
     "status": "success",
     "data": [{
@@ -194,8 +194,8 @@ GET /api/topics/m3msp79GLFN4MRRRk/rank?top=10
 ```
 
 用户关注与被关注接口：
-GET /api/(followers|following)?user=JsEstjX8g94GiSbM2
 ```
+GET /api/(followers|following)?user=JsEstjX8g94GiSbM2
 {
     status: "success",
     data: [
@@ -211,4 +211,37 @@ GET /api/(followers|following)?user=JsEstjX8g94GiSbM2
         }
     ]
 }
+```
+
+下注接口：
+
+```
+POST /api/topics/:topicId/bets
+{
+    user: "E2oySNPQzq2wx3RHg", // 测试使用
+    attitude: "negtive"
+}
+```
+
+结束下注接口：
+
+```
+PUT /api/topics/:topicId/bets/:betId
+{
+
+}
+```
+
+下注和结束下注示例：
+
+```
+[yanlong@yandeMacBook-Air.local ~]
+$ curl -X POST -d '{"attitude":"postive","user": "6J9erRNhtKsFew8TX"}' http://182.92.9.182/api/topics/ibjRtnCZ88PtfPXAQ/bets/ -H 'content-type: application/json'
+
+{"status":"success","data":{"_id":"dYCoEBLJSsfuMoBjS","attitude":"postive","user":"6J9erRNhtKsFew8TX","topic":"ibjRtnCZ88PtfPXAQ","status":"open","open":46126,"ctime":1428757843942,"mtime":1428757843942}}
+
+[yanlong@yandeMacBook-Air.local ~]
+$ curl -X PUT -d '{}' http://182.92.9.182/api/topics/ibjRtnCZ88PtfPXAQ/bets/dYCoEBLJSsfuMoBjS -H 'content-type: application/json'
+
+{"status":"success","data":{"_id":"dYCoEBLJSsfuMoBjS","attitude":"postive","user":"6J9erRNhtKsFew8TX","topic":"ibjRtnCZ88PtfPXAQ","status":"close","open":46126,"ctime":1428757843942,"mtime":1428757893388,"close":46136}}
 ```
