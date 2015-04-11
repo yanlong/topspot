@@ -231,7 +231,6 @@ function update(collection, id, selector, defualts, override) {
     defualts = defualts || {};
     override = override || {};
     _.extend(data, defualts, this.bodyParams, selector, override);
-    logger.warn(data)
     collection.update(id, {$set: data});
     return collection.findOne(id)
 }
