@@ -67,11 +67,21 @@ Meteor.startup(function() {
             }, query);
         }),
         post: resp(function() {
+            check(this.bodyParams, {
+                user: String,
+                attitude: Match.OneOf('postive', 'negtive'),
+            })
             var selector = {
-                user: this.userId,
+                // user: this.userId, // fortest
                 topic: this.params.topicId,
             }
-            return insert.call(this, Bets, selector);
+            var defualts = {
+            };
+            var override = {
+                status: 'open',
+                open: Prices.current(this.bodyParams.topic),
+            }
+            return insert.call(this, Bets, selector, defualts, override);
         })
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId?', {}, {
@@ -192,9 +202,11 @@ function getAll(collection, selector, query) {
     return collection.find(selector, option).fetch()
 }
 
-function insert(collection, selector) {
-    var data = this.bodyParams;
-    _.extend(data, selector);
+function insert(collection, selector, defualts, override) {
+    var data = {};
+    defualts = defualts || {};
+    override = override || {};
+    _.extend(data, defualts, this.bodyParams, selector, override);
     var id = collection.insert(data);
     return collection.findOne(id)
 }
