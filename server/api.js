@@ -79,9 +79,24 @@ Meteor.startup(function() {
             };
             var override = {
                 status: 'open',
-                open: Prices.current(this.bodyParams.topic),
+                open: Prices.current(selector.topic),
             }
             return insert.call(this, Bets, selector, defualts, override);
+        }),
+        put: resp(function () {
+            check(this.bodyParams, {
+            });
+            var selector = {
+                // user: this.userId, // fortest
+                topic: this.params.topicId,
+            }
+            var defualts = {
+            };
+            var override = {
+                status: 'close',
+                close: Prices.current(selector.topic),
+            }
+            return update.call(this, Bets, this.params.betId, selector, defualts, override);
         })
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId?', {}, {
@@ -208,6 +223,16 @@ function insert(collection, selector, defualts, override) {
     override = override || {};
     _.extend(data, defualts, this.bodyParams, selector, override);
     var id = collection.insert(data);
+    return collection.findOne(id)
+}
+
+function update(collection, id, selector, defualts, override) {
+    var data = {};
+    defualts = defualts || {};
+    override = override || {};
+    _.extend(data, defualts, this.bodyParams, selector, override);
+    logger.warn(data)
+    collection.update(id, {$set: data});
     return collection.findOne(id)
 }
 
