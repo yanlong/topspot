@@ -30,6 +30,7 @@
 
   // Configure environment
   "env": {
+    "SIMULATOR" : "off",
     "ROOT_URL": "http://myapp.com"
   },
 
