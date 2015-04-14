@@ -6,7 +6,10 @@
       "username": "root",
       // "password": "passwd",
       // or pem file (ssh based authentication)
-      "pem": "~/.ssh/id_rsa"
+      "pem": "~/.ssh/id_rsa",
+      "env": {
+        "SIMULATOR" : "on"
+      }
     }
   ],
 
@@ -30,7 +33,6 @@
 
   // Configure environment
   "env": {
-    "SIMULATOR" : "off",
     "ROOT_URL": "http://myapp.com"
   },
 
