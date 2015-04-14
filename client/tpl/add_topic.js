@@ -12,3 +12,9 @@ Template.addTopic.events({
         Router.go('topicList');
     }
 })
+
+Template.index.helpers({
+    status: function () {
+        return Meteor.status();
+    }
+})
