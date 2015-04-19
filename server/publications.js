@@ -3,5 +3,7 @@ Meteor.publish('currentUser', function() {
 });
 
 Meteor.publish('topics', function () {
-    return Topics.find();
+    var selector = {};
+    selector.user = this.userId;
+    return Topics.find(selector);
 })
