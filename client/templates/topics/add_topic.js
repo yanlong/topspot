@@ -19,8 +19,3 @@ Template.addTopic.events({
 Template.addTopic.helpers({
     types: Schemas.topic,
 })
-Template.index.helpers({
-    status: function() {
-        return Meteor.status();
-    }
-})
