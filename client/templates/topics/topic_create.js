@@ -1,4 +1,4 @@
-Template.addTopic.events({
+Template.topicCreate.events({
     'submit form': function(e) {
         e.preventDefault();
         var topic = {};
@@ -16,6 +16,6 @@ Template.addTopic.events({
         Router.go('topicList');
     }
 })
-Template.addTopic.helpers({
+Template.topicCreate.helpers({
     types: Schemas.topic,
 })

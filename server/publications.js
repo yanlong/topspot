@@ -7,3 +7,7 @@ Meteor.publish('topics', function () {
     selector.user = this.userId;
     return Topics.find(selector);
 })
+
+Meteor.publish('singleTopic', function (id) {
+    return Topics.find(id);
+})

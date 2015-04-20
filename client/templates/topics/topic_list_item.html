@@ -1,0 +1,14 @@
+<template name="topicListItem">
+  <div class="topic">
+    <a href="#" class="upvote btn btn-default {{upvotedClass}}">⬆</a>
+    <div class="topic-content">
+      <h3><a href="{{url}}">{{title}}</a>(id: {{_id}})<span>{{domain}}</span></h3>
+      <p>
+        submitted by {{user}},
+        <a href="{{pathFor 'topicPage'}}">xxx</a>
+        {{#if currentUser}}<a href="{{pathFor 'topicCreate'}}">Edit</a>{{/if}}
+      </p>
+    </div>
+    <a href="{{pathFor 'topicPage'}}" class="discuss btn btn-default">detail</a>
+  </div>
+</template>
