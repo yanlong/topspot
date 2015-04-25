@@ -110,6 +110,12 @@ Meteor.startup(function() {
             return layerRoute.call(this, Comments, 'commentId', {
                 topic: 'topicId'
             }, query);
+        }),
+        post: resp(function () {
+            var selector = {
+                topic: this.params.topicId,
+            }
+            return insert.call(this, Comments, selector);
         })
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {}, {
