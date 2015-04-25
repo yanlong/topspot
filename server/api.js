@@ -121,6 +121,12 @@ Meteor.startup(function() {
                 // topic: 'topicId',
                 comment: 'commentId',
             }, query);
+        }),
+        post: resp(function () {
+            var selector = {
+                comment: this.params.commentId,
+            };
+            return insert.call(this, Favors, selector);
         })
     })
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
