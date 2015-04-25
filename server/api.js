@@ -195,7 +195,29 @@ Meteor.startup(function() {
             return Accounts.createUser(this.bodyParams);
         })
     })
+    Restivus.addRoute('phone/verify', {}, {
+        get: resp(function () {
+            check(this.queryParams, {
+                phone: String,
+                code: Match.Optional(String),
+            })
+            return phoneVerify(this.queryParams.phone, this.queryParams.code);
+        })
+    })
 });
+
+var cache = {};
+
+function phoneVerify(phone, code) {
+    if (code) {
+        if (cache[phone] != code) {
+            throw new Meteor.Error('Phone verify failed.'+cache[phone]);
+        }
+    } else {
+        cache[phone] = Math.floor((Math.random() * 1e6 + 1e5));
+        return cache[phone];
+    }
+}
 
 function layerRoute(collection, id, selector, query) {
     var self = this;
