@@ -182,7 +182,9 @@ Meteor.startup(function() {
                 username: String,
                 phone: String,
                 password: String,
+                code: String,
             })
+            phoneVerify(this.bodyParams.phone, this.bodyParams.code);
             this.bodyParams.profile = {
                 phone: this.bodyParams.phone,
             }
@@ -204,6 +206,20 @@ Meteor.startup(function() {
             return phoneVerify(this.queryParams.phone, this.queryParams.code);
         })
     })
+    Restivus.addRoute('password/reset', {}, {
+        get: resp(function () {
+            check(this.queryParams, {
+                phone: String,
+                code: String,
+                password: String,
+            })
+            phoneVerify(this.queryParams.phone, this.queryParams.code);
+            var user = Meteor.users.findOne({'profile.phone': this.queryParams.phone});
+            Accounts.setPassword(user._id, this.queryParams.password);
+        })
+    })
+
+
 });
 
 var cache = {};
@@ -211,7 +227,9 @@ var cache = {};
 function phoneVerify(phone, code) {
     if (code) {
         if (cache[phone] != code) {
-            throw new Meteor.Error('Phone verify failed.'+cache[phone]);
+            throw new Meteor.Error('Phone verify failed.');
+        } else {
+            cache[phone] = null;
         }
     } else {
         cache[phone] = Math.floor((Math.random() * 1e6 + 1e5));
