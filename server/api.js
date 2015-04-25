@@ -176,6 +176,25 @@ Meteor.startup(function() {
             return getAll.call(this, Follows, selector, {});
         })
     })
+    Restivus.addRoute('register', {}, {
+        post: resp(function() {
+            check(this.bodyParams, {
+                username: String,
+                phone: String,
+                password: String,
+            })
+            this.bodyParams.profile = {
+                phone: this.bodyParams.phone,
+            }
+            // check phone number is unique
+            var count = Meteor.users.find({'profile.phone': this.bodyParams.phone}).count();
+            if (count != 0) {
+                throw new Meteor.Error('Phone not unique');
+            }
+            delete this.bodyParams.phone
+            return Accounts.createUser(this.bodyParams);
+        })
+    })
 });
 
 function layerRoute(collection, id, selector, query) {
