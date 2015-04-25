@@ -20,6 +20,9 @@ Meteor.startup(function() {
                         status: 'open',
                         title: null,
                         subtitle: null,
+                        tags: null,
+                        catalog: null,
+                        subcatalog: null,
                     }
                     var topics = getAll.call(this, Topics, null, query);
                     return topics;
