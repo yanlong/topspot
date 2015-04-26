@@ -15,3 +15,7 @@ Meteor.publish('singleTopic', function (id) {
 Meteor.publish('currentPrice', function (topicId) {
     return Prices.last(topicId);
 })
+
+Meteor.publish('latestBets', function (topicId, top) {
+    return Bets.find({topic: topicId}, {sort: {mtime:-1}, limit: top || 10});
+})
