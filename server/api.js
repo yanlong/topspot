@@ -20,6 +20,9 @@ Meteor.startup(function() {
                         status: 'open',
                         title: null,
                         subtitle: null,
+                        tags: null,
+                        catalog: null,
+                        subcatalog: null,
                     }
                     var topics = getAll.call(this, Topics, null, query);
                     return topics;
@@ -107,6 +110,12 @@ Meteor.startup(function() {
             return layerRoute.call(this, Comments, 'commentId', {
                 topic: 'topicId'
             }, query);
+        }),
+        post: resp(function () {
+            var selector = {
+                topic: this.params.topicId,
+            }
+            return insert.call(this, Comments, selector);
         })
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {}, {
@@ -118,6 +127,12 @@ Meteor.startup(function() {
                 // topic: 'topicId',
                 comment: 'commentId',
             }, query);
+        }),
+        post: resp(function () {
+            var selector = {
+                comment: this.params.commentId,
+            };
+            return insert.call(this, Favors, selector);
         })
     })
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
@@ -176,7 +191,66 @@ Meteor.startup(function() {
             return getAll.call(this, Follows, selector, {});
         })
     })
+    Restivus.addRoute('register', {}, {
+        post: resp(function() {
+            check(this.bodyParams, {
+                username: String,
+                phone: String,
+                password: String,
+                code: String,
+            })
+            phoneVerify(this.bodyParams.phone, this.bodyParams.code);
+            this.bodyParams.profile = {
+                phone: this.bodyParams.phone,
+            }
+            // check phone number is unique
+            var count = Meteor.users.find({'profile.phone': this.bodyParams.phone}).count();
+            if (count != 0) {
+                throw new Meteor.Error('Phone not unique');
+            }
+            delete this.bodyParams.phone
+            return Accounts.createUser(this.bodyParams);
+        })
+    })
+    Restivus.addRoute('phone/verify', {}, {
+        get: resp(function () {
+            check(this.queryParams, {
+                phone: String,
+                code: Match.Optional(String),
+            })
+            return phoneVerify(this.queryParams.phone, this.queryParams.code);
+        })
+    })
+    Restivus.addRoute('password/reset', {}, {
+        get: resp(function () {
+            check(this.queryParams, {
+                phone: String,
+                code: String,
+                password: String,
+            })
+            phoneVerify(this.queryParams.phone, this.queryParams.code);
+            var user = Meteor.users.findOne({'profile.phone': this.queryParams.phone});
+            Accounts.setPassword(user._id, this.queryParams.password);
+        })
+    })
+
+
 });
+
+var cache = {};
+
+function phoneVerify(phone, code) {
+    if (code) {
+        if (cache[phone] != code) {
+            throw new Meteor.Error('Phone verify failed.');
+        } else {
+            cache[phone] = null;
+        }
+    } else {
+        cache[phone] = Math.floor((Math.random() * 1e6 + 1e5));
+        return cache[phone];
+    }
+}
 
 function layerRoute(collection, id, selector, query) {
     var self = this;
