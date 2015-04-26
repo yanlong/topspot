@@ -12,7 +12,7 @@ Template.topicCreate.events({
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();
-        var id = Topics.insert(topic);
+        var id = Topics.insert(_.extend({status: 'open'}, topic));
         Router.go('topicList');
     }
 })

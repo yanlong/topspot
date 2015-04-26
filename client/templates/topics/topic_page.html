@@ -1,7 +1,14 @@
 <template name="topicPage">
   <div class="topic-page page">
-    标题：{{title}}
-    当前价格：{{last}}
-    预测数：{{betsCount}}
+    {{#each types}}
+        <div class="form-group">
+          <label class="control-label" for="{{name}}">{{label}}</label>
+          <div class="controls">
+              <!-- <input name="{{name}}" id="{{name}}" type="{{type}}" value={{value ../data}} placeholder="{{label}}" class="form-control"/> -->
+              -- <span>{{value ../data}}</span>
+              <span class="help-block"></span>
+          </div>
+        </div>
+    {{/each}}
   </div>
 </template>
