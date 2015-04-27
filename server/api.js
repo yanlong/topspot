@@ -287,7 +287,18 @@ function getAll(collection, selector, query) {
         }
         return memo;
     }, {})
-    selector = _.extend(selector, query);
+    var search = {};
+    if (this.queryParams._wd) {
+        search = [];
+        var reg = new RegExp(this.queryParams._wd);
+        ['title', 'subtitle', 'desc'].forEach(function (v) {
+            var s = {};
+            s[v] = reg;
+            search.push(s)
+        })
+        search = {$or: search}
+    }
+    selector = _.extend(selector, query, search);
     return collection.find(selector, option).fetch()
 }
 
