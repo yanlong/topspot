@@ -191,6 +191,15 @@ Meteor.startup(function() {
             return getAll.call(this, Follows, selector, {});
         })
     })
+    Restivus.addRoute('follows', {}, {
+        post: resp(function() {
+            check(this.bodyParams, {
+                user: String,
+                target: String,
+            })
+            return insert.call(this, Follows, this.bodyParams, {});
+        })
+    })
     Restivus.addRoute('register', {}, {
         post: resp(function() {
             check(this.bodyParams, {
