@@ -288,6 +288,7 @@ function getAll(collection, selector, query) {
         return memo;
     }, {})
     var search = {};
+    // Support text search
     if (this.queryParams._wd) {
         search = [];
         var reg = new RegExp(this.queryParams._wd);
@@ -298,6 +299,11 @@ function getAll(collection, selector, query) {
         })
         search = {$or: search}
     }
+    // Support sort by field
+    ['_desc', '_asc'].forEach(function (v) {
+        option.sort = option.sort|| {};
+        option.sort[self.queryParams[v]] = v == '_desc' ? -1: 1;
+    })
     selector = _.extend(selector, query, search);
     return collection.find(selector, option).fetch()
 }
