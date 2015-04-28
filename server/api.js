@@ -43,22 +43,22 @@ Meteor.startup(function() {
             }
         }
     });
-    Restivus.addCollection(Bets, {
-        routeOptions: {
-            // authRequired: true,
-            // roleRequired: 'admin'
-        },
-        endpoints: {
-            getAll: {
-                // authRequired: true,
-                // roleRequired: 'admin'
-            },
-            get: {
-                // authRequired: true,
-                // roleRequired: 'admin'
-            }
-        }
-    });
+    // Restivus.addCollection(Bets, {
+    //     routeOptions: {
+    //         // authRequired: true,
+    //         // roleRequired: 'admin'
+    //     },
+    //     endpoints: {
+    //         getAll: {
+    //             // authRequired: true,
+    //             // roleRequired: 'admin'
+    //         },
+    //         get: {
+    //             // authRequired: true,
+    //             // roleRequired: 'admin'
+    //         }
+    //     }
+    // });
     Restivus.addRoute('topics/:topicId/bets/:betId?', {}, {
         get: resp(function() {
             var query = {
@@ -242,6 +242,15 @@ Meteor.startup(function() {
             Accounts.setPassword(user._id, this.queryParams.password);
         })
     })
+    Restivus.addRoute('bets/', {}, {
+        get: resp(function() {
+            var selector = {
+                user: this.userId || this.queryParams.user, // fortest
+            }
+            // return selector;
+            return getAll.call(this, Bets, selector, {});
+        })
+    })
 
 
 });
@@ -314,7 +323,35 @@ function getAll(collection, selector, query) {
         option.sort[self.queryParams[v]] = v == '_desc' ? -1: 1;
     })
     selector = _.extend(selector, query, search);
-    return collection.find(selector, option).fetch()
+    var records = collection.find(selector, option).fetch();
+    if (this.queryParams._distinct) {
+        var key = this.queryParams._distinct;
+        var data = {};
+        records.forEach(function (r) {
+            data[r[key]] = true;
+        })
+        var distincted = _.map(data, function (v,k) {
+            var ret = {}
+            ret[key] = k;
+            return ret;
+        })
+        if (this.queryParams._populate) {
+            return populate(key, distincted)
+        } 
+        return distincted;
+    } else {
+        return records;
+    }
+}
+
+function populate(key, docs) {
+    docs = docs || [];
+    var ids = _.map(docs, function (v) {
+        return v[key];
+    })
+    return Models[key].find({_id: {$in: ids}}).map(function (v) {
+        return {topic: v};
+    })
 }
 
 function insert(collection, selector, defualts, override) {
