@@ -56,7 +56,8 @@ function getP(p0, a, b) {
     var x = getX(a, b);
     var xx = 0;
     if (x < 80 && x > -80) {
-        xx = x + Utils.arrRand([-1,0,1]);
+        // xx = x + Utils.arrRand([-1,0,1]);
+        xx = x + Utils.arrRand([-5, -4, -3, -2, 2, 3, 4, 5]);
     } else {
         xx = x;
     }
