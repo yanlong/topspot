@@ -252,7 +252,11 @@ Meteor.startup(function() {
         })
     })
 
-
+    Restivus.addRoute('catalogs/', {}, {
+        get: resp(function() {
+            return Consts.catalogs;
+        })
+    })
 });
 
 var cache = {};
