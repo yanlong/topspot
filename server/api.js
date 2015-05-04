@@ -344,6 +344,9 @@ function getAll(collection, selector, query) {
         } 
         return distincted;
     } else {
+        if (this.queryParams._populate) {
+            return populate(this.queryParams._populate, records)
+        }
         return records;
     }
 }
@@ -353,9 +356,14 @@ function populate(key, docs) {
     var ids = _.map(docs, function (v) {
         return v[key];
     })
-    return Models[key].find({_id: {$in: ids}}).map(function (v) {
-        return {topic: v};
+    var map = {};
+    Models[key].find({_id: {$in: ids}}).forEach(function (v) {
+        map[v._id] = v;
     })
+    docs.forEach(function (v) {
+        v[key] = map[v[key]];
+    })
+    return docs;
 }
 
 function insert(collection, selector, defualts, override) {
