@@ -363,6 +363,7 @@ function populate(key, docs) {
     docs.forEach(function (v) {
         v[key] = map[v[key]];
     })
+    // TODO: filter secret fileds
     return docs;
 }
 
