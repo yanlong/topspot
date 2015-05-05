@@ -272,8 +272,12 @@ Meteor.startup(function() {
             var option = {
                 fields: query
             }
-            return layerRoute.call(this, Rankings, 'rankingId', {
+            var rank = layerRoute.call(this, Rankings, 'rankingId', {
             }, query, option);
+            if (this.params.rankingId) {
+                rank.list = populate('user', rank.list);
+            }
+            return rank;
         })
     })
 });
@@ -303,7 +307,7 @@ function layerRoute(collection, id, selector, query, option) {
     var id = this.params[id];
     if (id) {
         selector._id = id;
-        data = collection.findOne(selector, option);
+        data = collection.findOne(selector); // TODO: support
     } else {
         data = getAll.call(this, collection, selector, query, option)
     }
