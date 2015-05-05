@@ -259,7 +259,21 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('rank/', {}, {
         get: resp(function() {
-            return dayRank(Date.now());
+            // return Rank.day(Date.now());
+            return moment().format('YYYY-MM-DD');
+        })
+    })
+    Restivus.addRoute('rankings/:rankingId?', {}, {
+        get: resp(function() {
+            var query = {
+                type: 1,
+                date: 1,
+            }
+            var option = {
+                fields: query
+            }
+            return layerRoute.call(this, Rankings, 'rankingId', {
+            }, query, option);
         })
     })
 });
@@ -279,7 +293,8 @@ function phoneVerify(phone, code) {
     }
 }
 
-function layerRoute(collection, id, selector, query) {
+function layerRoute(collection, id, selector, query, option) {
+    option = option || {};
     var self = this;
     var data = null;
     _.each(selector, function(v, k) {
@@ -288,26 +303,29 @@ function layerRoute(collection, id, selector, query) {
     var id = this.params[id];
     if (id) {
         selector._id = id;
-        data = collection.findOne(selector);
+        data = collection.findOne(selector, option);
     } else {
-        data = getAll.call(this, collection, selector, query)
+        data = getAll.call(this, collection, selector, query, option)
     }
     return data;
 }
 
-function getAll(collection, selector, query) {
+function getAll(collection, selector, query, option) {
     selector = selector || {};
-    var option = {
+    option = option || {};
+    var optionKeys = {
         // sort: 'mtime',
         limit: 20,
         skip: 0,
     };
     var self = this
-    _.each(option, function(v, k) {
+    _.each(optionKeys, function(v, k) {
         if (self.queryParams[k]) {
-            option[k] = parseInt(self.queryParams[k]);
+            optionKeys[k] = parseInt(self.queryParams[k]);
         }
     })
+    // option support
+    _.extend(option, optionKeys);
     var query = _.reduce(query, function(memo, v, k) {
         if (self.queryParams[k]) {
             memo[k] = self.queryParams[k];
@@ -400,54 +418,4 @@ function resp(fn) {
     }
 }
 
-function rank(bets, top) {
-    top = top || Meteor.users.find().count();
-    var counter = {}
-    bets.forEach(function(doc, index) {
-        var user = doc.user;
-        if (!counter[user]) counter[user] = 0;
-        counter[user] += (doc.close) - doc.open;
-    })
-    var scores = _.map(counter, function(v, k) {
-        return {
-            user: k,
-            scores: v
-        };
-    })
-    var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function(v, index, arr) {
-        // v.user = Meteor.users.findOne(v.user);
-        // delete v.user.services;
-        index += 1;
-        var r = Math.ceil(index / arr.length * 100);
-        v.index = index;
-        v.real = r;
-        v.nominal = Consts.topicRankMap[r-1][1];
-        v.mark = Consts.topicRankMap[r-1][2];
-        return v;
-    });
-    return tops;
-}
 
-function dayRank(time) {
-    var total = rank.length;
-    var hour = 3600 * 1000;
-    var day = hour * 24;
-    return timeRank(time, day);
-}
-
-function timeRank(time, scope) {
-    var begin = Math.floor(time/scope) * scope;
-    var end = begin + scope - 1;
-    var bets = Bets.find({
-        status: 'close',
-        mtime: {
-            $gt: begin,
-            $lt: end,
-        }
-    }, {
-        sort: {
-            mtime: -1
-        }
-    })
-    return rank(bets);
-}
