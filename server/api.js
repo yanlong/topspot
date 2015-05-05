@@ -257,6 +257,19 @@ Meteor.startup(function() {
             return Consts.catalogs;
         })
     })
+    Restivus.addRoute('rank/', {}, {
+        get: resp(function() {
+            var bets = Bets.find({
+                status: 'close',
+            }, {
+                limit: 100000,
+                sort: {
+                    mtime: -1
+                }
+            })
+            return rank(bets);
+        })
+    })
 });
 
 var cache = {};
@@ -393,4 +406,37 @@ function resp(fn) {
             data: data,
         }
     }
+}
+
+function rank(bets, top) {
+    top = top || Meteor.users.find().count();
+    var counter = {}
+    bets.forEach(function(doc, index) {
+        var user = doc.user;
+        if (!counter[user]) counter[user] = 0;
+        counter[user] += (doc.close) - doc.open;
+    })
+    var scores = _.map(counter, function(v, k) {
+        return {
+            user: k,
+            scores: v
+        };
+    })
+    var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function(v, index, arr) {
+        // v.user = Meteor.users.findOne(v.user);
+        // delete v.user.services;
+        index += 1;
+        var r = Math.ceil(index / arr.length * 100);
+        v.index = index;
+        v.real = r;
+        v.nominal = Consts.topicRankMap[r-1][1];
+        v.mark = Consts.topicRankMap[r-1][2];
+        return v;
+    });
+    return tops;
+}
+
+function dayRank(rank) {
+    var total = rank.length;
+
 }

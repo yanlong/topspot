@@ -5,7 +5,7 @@ Meteor.startup(function() {
     }
 
     function init() {
-        for (var i = 0; i < TEST_NUM; i++) {
+        for (var i = 0; i < Consts.test.num.user; i++) {
             initUsers(i);
         }
     }
@@ -20,7 +20,7 @@ Meteor.startup(function() {
                 portrait: 'http://wx.qlogo.cn/mmopen/g3MonUZtNHkdmzicIlibx6iaFqAc56vxLSUfpb6n5WKSYVY0ChQKkiaJSgQ1dZuTOgvLLrhJbERQQ4eMsv84eavHiaiceqxibJxCfHe/0',
             },
         })
-        for (var i = 0; i < TEST_NUM; i++) {
+        for (var i = 0; i < Consts.test.num.topic; i++) {
             initTopics(i, u);
         }
         initFollows();
