@@ -259,15 +259,7 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('rank/', {}, {
         get: resp(function() {
-            var bets = Bets.find({
-                status: 'close',
-            }, {
-                limit: 100000,
-                sort: {
-                    mtime: -1
-                }
-            })
-            return rank(bets);
+            return dayRank(Date.now());
         })
     })
 });
@@ -436,7 +428,26 @@ function rank(bets, top) {
     return tops;
 }
 
-function dayRank(rank) {
+function dayRank(time) {
     var total = rank.length;
+    var hour = 3600 * 1000;
+    var day = hour * 24;
+    return timeRank(time, day);
+}
 
+function timeRank(time, scope) {
+    var begin = Math.floor(time/scope) * scope;
+    var end = begin + scope - 1;
+    var bets = Bets.find({
+        status: 'close',
+        mtime: {
+            $gt: begin,
+            $lt: end,
+        }
+    }, {
+        sort: {
+            mtime: -1
+        }
+    })
+    return rank(bets);
 }
