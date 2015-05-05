@@ -19,3 +19,4 @@ accounts-google
 accounts-github
 jag:pince
 percolate:synced-cron
+momentjs:moment
