@@ -211,6 +211,19 @@ Meteor.startup(function() {
             return Follows.remove(this.params.followId);
         })
     })
+    Restivus.addRoute('friends', {}, {
+        get: resp(function () {
+            var user = this.userId || this.queryParams.user;
+            var followers = Follows.find({target: user}).fetch();
+            var following = Follows.find({user: user}).fetch();
+            var friends = _.intersection(_.map(followers, function (v) {
+                return v.user;
+            }), _.map(following, function (v) {
+                return v.target
+            }))
+            return Meteor.users.find({_id:{$in:friends}}).fetch();
+        })
+    })
     Restivus.addRoute('register', {}, {
         post: resp(function() {
             check(this.bodyParams, {
