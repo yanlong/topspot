@@ -1,8 +1,8 @@
 <template name="topicListItem">
-  <div class="topic">
+  <div class="topic" id="{{_id}}">
     <a href="#" class="upvote btn btn-default {{upvotedClass}}">⬆</a>
     <div class="topic-content">
-      <h3><a href="{{url}}">{{title}}</a>(id: {{_id}})<span>{{domain}}</span></h3>
+      <h3><a href="{{url}}">{{title}}</a><span>{{domain}}</span></h3>
       <p>
         submitted by {{user}},
         <!-- <a href="{{pathFor 'topicPage'}}">Remove</a> -->
