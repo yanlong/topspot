@@ -1,0 +1,14 @@
+<template name="topicEdit">
+  <form class="main form page">
+    {{#each types}}
+    <div class="form-group">
+      <label class="control-label" for="{{name}}">{{label}}</label>
+      <div class="controls">
+          <input name="{{name}}" id="{{name}}" type="{{type}}" value="{{value ../data}}" placeholder="{{label}}" class="form-control"/>
+          <span class="help-block"></span>
+      </div>
+    </div>
+    {{/each}}
+    <input type="submit" value="Submit" class="btn btn-primary"/>
+  </form>
+</template>
