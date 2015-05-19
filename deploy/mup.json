@@ -8,7 +8,7 @@
       // or pem file (ssh based authentication)
       "pem": "~/.ssh/id_rsa",
       "env": {
-        "SIMULATOR" : "on"
+        "SIMULATOR" : "off"
       }
     }
   ],
@@ -29,7 +29,7 @@
   "appName": "topspot",
 
   // Location of app (local directory)
-  "app": "~/topspot",
+  "app": "~/work/meteor/topspot",
 
   // Configure environment
   "env": {
