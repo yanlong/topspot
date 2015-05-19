@@ -1,5 +1,6 @@
 <template name="topicPage">
   <div class="topic-page page">
+      <a href="{{pathFor 'topicList'}}" class="discuss btn btn-default">返回</a>
     {{#each types}}
         <div class="form-group">
           <label class="control-label" for="{{name}}">{{label}}</label>

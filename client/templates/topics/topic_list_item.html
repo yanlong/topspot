@@ -1,15 +1,18 @@
 <template name="topicListItem">
   <div class="topic" id="{{_id}}">
-    <a href="#" class="upvote btn btn-default {{upvotedClass}}">⬆</a>
+    <!-- <a href="#" class="upvote btn btn-default {{upvotedClass}}">⬆</a> -->
     <div class="topic-content">
-      <h3><a href="{{url}}">{{title}}</a><span>{{domain}}</span></h3>
+      <h3><a href="{{pathFor 'topicPage'}}">{{title}}</a><span>{{domain}}</span></h3>
+      <p>{{timestamp2datetime begin}} ~ {{timestamp2datetime end}}</p>
+      <p>分类：{{catalog}}</p>
+      <p>标签：{{tags}}</p>
       <p>
-        submitted by {{user}},
+        <!-- submitted by {{user}}, -->
         <!-- <a href="{{pathFor 'topicPage'}}">Remove</a> -->
         <a class="remove" href="">Remove</a>
         {{#if currentUser}}<a href="{{pathFor 'topicEdit'}}">Edit</a>{{/if}}
       </p>
     </div>
-    <a href="{{pathFor 'topicPage'}}" class="discuss btn btn-default">detail</a>
+    <!-- <a href="{{pathFor 'topicPage'}}" class="discuss btn btn-default">详情</a> -->
   </div>
 </template>
