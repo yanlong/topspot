@@ -1,5 +1,6 @@
 var uri = '/2013-12-26/Accounts/%s/SMS/TemplateSMS?sig=%s'
-var host = 'https://sandboxapp.cloopen.com:8883';
+// var host = 'https://sandboxapp.cloopen.com:8883';
+var host = 'https://app.cloopen.com:8883';
 var crypto = Npm.require('crypto')
 var accountSid = 'aaf98f894ce46b08014ce95a70dd03ec';
 var accountToken = '1b596555cf2d45109dc0b3c3cbaf9cd0';
