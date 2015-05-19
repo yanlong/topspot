@@ -9,6 +9,9 @@ Template.topicCreate.events({
                 alert('Invaild value: ' + v.name);
                 return;
             }
+            if (v.type == 'datetime-local') {
+                value = Utils.datetime2timestamp(value);
+            }
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();
