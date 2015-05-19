@@ -271,8 +271,13 @@ Meteor.startup(function() {
             var selector = {
                 user: this.userId || this.queryParams.user, // fortest
             }
+            var query = {
+                attitude: null,
+                status: null,
+                topic: null,
+            }
             // return selector;
-            return getAll.call(this, Bets, selector, {});
+            return getAll.call(this, Bets, selector, query);
         })
     })
 
