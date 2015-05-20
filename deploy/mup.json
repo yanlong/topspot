@@ -8,7 +8,8 @@
       // or pem file (ssh based authentication)
       "pem": "~/.ssh/id_rsa",
       "env": {
-        "SIMULATOR" : "off"
+        "SIMULATOR" : "off",
+        "NODE_ENV" : "development"
       }
     }
   ],
