@@ -8,7 +8,8 @@ var accountToken = '1b596555cf2d45109dc0b3c3cbaf9cd0';
 function send(phone, code) {
 	var body = {
 		to: phone,
-		appId: '8a48b5514ce46cb8014ce95ad37d0490',
+		appId: '8a48b5514ce46cb8014ce95ad37d0490', // fortest
+		// appId: '8a48b5514ce46cb8014ce9608b3c049a', // online
 		templateId: '1',
 		datas: [ new String(code), '1'],
 	};
