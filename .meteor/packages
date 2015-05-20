@@ -24,3 +24,5 @@ meteorhacks:npm
 
 
 npm-container
+cfs:standard-packages
+cfs:filesystem

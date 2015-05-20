@@ -15,10 +15,23 @@ Template.topicCreate.events({
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();
-        var id = Topics.insert(_.extend({status: 'open'}, topic));
+        var id = Topics.insert(_.extend({
+            status: 'open'
+        }, topic));
         Router.go('topicList');
     }
 })
 Template.topicCreate.helpers({
     types: Schemas.topic,
 })
+
+Template.topicCreate.events({
+    'change #title': function(event, template) {
+        var files = event.target.files;
+        for (var i = 0, ln = files.length; i < ln; i++) {
+            Images.insert(files[i], function(err, fileObj) {
+                // Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
+            });
+        }
+    }
+});
