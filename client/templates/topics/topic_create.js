@@ -26,7 +26,7 @@ Template.topicCreate.helpers({
 })
 
 Template.topicCreate.events({
-    'change #title': function(event, template) {
+    'change #images': function(event, template) {
         var files = event.target.files;
         for (var i = 0, ln = files.length; i < ln; i++) {
             Images.insert(files[i], function(err, fileObj) {
