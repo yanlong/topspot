@@ -24,3 +24,6 @@ meteorhacks:npm
 
 
 npm-container
+cfs:standard-packages
+cfs:filesystem
+jparker:crypto-md5

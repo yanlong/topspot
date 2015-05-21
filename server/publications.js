@@ -19,3 +19,7 @@ Meteor.publish('currentPrice', function (topicId) {
 Meteor.publish('latestBets', function (topicId, top) {
     return Bets.find({topic: topicId}, {sort: {mtime:-1}, limit: top || 10});
 })
+
+Meteor.publish('images', function () {
+	return Images.find();
+})

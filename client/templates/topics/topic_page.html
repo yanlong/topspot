@@ -6,7 +6,11 @@
           <label class="control-label" for="{{name}}">{{label}}</label>
           <div class="controls">
               <!-- <input name="{{name}}" id="{{name}}" type="{{type}}" value={{value ../data}} placeholder="{{label}}" class="form-control"/> -->
+              {{#if isImage }}
+              <img src="{{value ../data}}" width="100%" />
+              {{else}}
               -- <span>{{value ../data}}</span>
+              {{/if}}
               <span class="help-block"></span>
           </div>
         </div>
