@@ -16,10 +16,10 @@ function rank(bets, top) {
     return tops;
 }
 
-function dayRank(time) {
+function dayRank(time, catalog) {
     var hour = 3600 * 1000;
     var day = hour * 24;
-    var rank = timeRank(time, day);
+    var rank = timeRank(time, day, catalog && {catalog: catalog});
     return rank.map(function(v, index, arr) {
         // v.user = Meteor.users.findOne(v.user);
         // delete v.user.services;
@@ -34,21 +34,34 @@ function dayRank(time) {
     });
 }
 
-function timeRank(time, scope) {
+function timeRank(time, scope, filter) {
     var begin = Math.floor(time/scope) * scope;
     var end = begin + scope - 1;
-    var bets = Bets.find({
+    var selector = {
         status: 'close',
         mtime: {
             $gt: begin,
             $lt: end,
         }
-    }, {
+    };
+    if (filter) {
+        selector.topic = {$in: filterTopic(filter)};
+    }
+    var bets = Bets.find(selector, {
         sort: {
             mtime: -1
         }
     })
+    logger.info('Rankings:', filter, bets.count())
     return rank(bets);
+}
+
+function filterTopic(filter) {
+    var ids = [];
+    Topics.find(filter).forEach(function (v) {
+        ids.push(v._id);
+    })
+    return ids;
 }
 
 Rank = {
