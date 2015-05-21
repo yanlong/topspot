@@ -54,6 +54,8 @@ iron:middleware-stack@1.0.7
 iron:router@1.0.7
 iron:url@1.0.7
 jag:pince@0.0.6
+jparker:crypto-core@0.1.0
+jparker:crypto-md5@0.1.1
 jquery@1.11.3_2
 json@1.0.3
 launch-screen@1.0.2

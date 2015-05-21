@@ -1,5 +1,5 @@
 Template.topicCreate.events({
-    'submit form': function(e) {
+    'submit form': function(e,template) {
         e.preventDefault();
         var topic = {};
         for (var i in Schemas.topic) {
@@ -11,6 +11,10 @@ Template.topicCreate.events({
             }
             if (v.type == 'datetime-local') {
                 value = Utils.datetime2timestamp(value);
+            }
+            if (v.type == 'file') {
+                value = [$(e.target).find('[name=' + v.name + ']').attr('data-url')];
+                // alert(value)
             }
             topic[v.name] = value;
         }
@@ -25,13 +29,3 @@ Template.topicCreate.helpers({
     types: Schemas.topic,
 })
 
-Template.topicCreate.events({
-    'change #images': function(event, template) {
-        var files = event.target.files;
-        for (var i = 0, ln = files.length; i < ln; i++) {
-            Images.insert(files[i], function(err, fileObj) {
-                // Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
-            });
-        }
-    }
-});

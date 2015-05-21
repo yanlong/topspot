@@ -1,6 +1,12 @@
 <template name="topicCreate">
   <form class="main form page">
-  {{> imageView}}
+  <!-- {{> imageView}} -->
+    {{#each images}}
+      <div>
+        <a href="{{this.url}}" target="_blank"><img src="{{this.url}}" alt="" class="thumbnail" /></a>
+      </div>
+    {{/each}}
+    {{> imageUpload}}
     {{#each types}}
     <div class="form-group">
       <label class="control-label" for="{{name}}">{{label}}</label>
