@@ -16,3 +16,8 @@ db['system.profile'].group({
     }
 })
 ```
+
+## reset db
+['bets', 'prices', 'comments', 'favors', 'follows', 'rankings'].forEach(function (v) {
+    db[v].drop();
+})
