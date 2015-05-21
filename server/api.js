@@ -323,7 +323,7 @@ function phoneVerify(phone, code) {
     } else {
         code = ('000000' + Math.floor(Math.random() * 1e6)).slice(-6);
         Sms.send(phone, code);
-        cache[phone] = code;
+        // cache[phone] = code;
         return cache[phone];
     }
 }
