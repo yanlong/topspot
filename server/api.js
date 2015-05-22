@@ -297,6 +297,9 @@ Meteor.startup(function() {
             var query = {
                 type: 1,
                 date: 1,
+                ctime: 1,
+                mtime: 1,
+                catalog: 1,
             }
             var option = {
                 fields: query
