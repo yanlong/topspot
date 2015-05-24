@@ -52,7 +52,8 @@ function timeRank(time, scope, filter) {
     var bets = Bets.find(selector, {
         sort: {
             mtime: -1
-        }
+        },
+        limit: 10000, // fortest
     })
     logger.info('Time rankings:', filter, bets.count())
     return baseRank(bets);

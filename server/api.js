@@ -147,7 +147,7 @@ Meteor.startup(function() {
         get: resp(function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
-            var rank = Rankings.findOne({type:'topic'}, {sort:{mtime:-1}});
+            var rank = Rankings.findOne({type:'topic', topic: topic}, {sort:{mtime:-1}});
             rank.list = populateUser(rank.list);
             if (this.queryParams.user) {
                 var my = null;
@@ -286,12 +286,11 @@ Meteor.startup(function() {
             var query = {
                 type: 1,
                 date: 1,
-                ctime: 1,
-                mtime: 1,
                 catalog: 1,
+                topic: 1,
             }
             var option = {
-                fields: query
+                fields: {list:0},
             }
             var rank = layerRoute.call(this, Rankings, 'rankingId', {
             }, query, option);

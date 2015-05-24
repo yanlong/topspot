@@ -32,6 +32,7 @@ SyncedCron.add({
             Models.rankings.insert({
                 list: topicRank(topic),
                 type: 'topic',
+                topic: topic._id,
                 // date: moment().format('YYYY-MM-DD'),
             })
         })
@@ -39,13 +40,32 @@ SyncedCron.add({
     }
 });
 
+SyncedCron.add({
+    name: 'Calc price of topics.',
+    schedule: function(parser) {
+        // parser is a later.parse object
+        // return parser.text('every 5 seconds');
+        return parser.text('every 1 minutes');
+        // return parser.text('at 00:00 am');
+    },
+    job: function() {
+        Topics.find({status: 'open'}).forEach(function(topic) {
+            Prices.insert({
+                topic: topic._id,
+                price: topic.price || topic.open,
+            })
+        })
+        return;
+    }
+});
+
 function topicRank(topic) {
-    var pre = Rankings.findOne({type:'topic'}, {sort:{mtime:-1}});
+    var pre = Rankings.findOne({type:'topic', topic: topic._id}, {sort:{mtime:-1}});
     var now = Rank.topicRank(topic._id);
-    pre = _.reduce(pre.list, function (memo, v, k) {
+    pre = pre ? _.reduce(pre.list, function (memo, v, k) {
         memo[v.user] = k;
         return memo;
-    }, {})
+    }, {}) : {};
     now.forEach(function (v, k) {
         v.delta = (pre[v.user] || 0) - k;
     })

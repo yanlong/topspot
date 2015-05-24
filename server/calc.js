@@ -49,7 +49,7 @@ function compute(topic) {
         price: getP(Prices.current(topic), counter.postive, counter.negtive),
     }
     logger.trace(newPrice)
-    Prices.insert(newPrice);
+    // Prices.insert(newPrice);
     Topics.update(topic._id, {$set: {price: newPrice.price, _NO_MODIFY:true}});
 }
 
