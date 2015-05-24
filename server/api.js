@@ -147,8 +147,20 @@ Meteor.startup(function() {
         get: resp(function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
-            var rank = Rank.topicRank(topic, top);
-            rank = populateUser(rank);
+            var rank = {};
+            rank.list = Rank.topicRank(topic);
+            rank.list = populateUser(rank.list);
+            if (this.queryParams.user) {
+                var my = null;
+                for (var k in rank.list) {
+                    var v = rank.list[k]
+                    if (v.user._id == this.queryParams.user) {
+                        my = v;
+                        break;
+                    }
+                }
+                rank.my = my;
+            }
             return rank;
         })
     })
