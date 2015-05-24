@@ -147,8 +147,7 @@ Meteor.startup(function() {
         get: resp(function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
-            var rank = {};
-            rank.list = Rank.topicRank(topic);
+            var rank = Rankings.findOne({type:'topic'}, {sort:{mtime:-1}});
             rank.list = populateUser(rank.list);
             if (this.queryParams.user) {
                 var my = null;
@@ -161,6 +160,7 @@ Meteor.startup(function() {
                 }
                 rank.my = my;
             }
+            rank.list = rank.list.slice(0,top);
             return rank;
         })
     })
