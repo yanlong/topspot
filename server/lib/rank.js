@@ -54,7 +54,7 @@ function timeRank(time, scope, filter) {
             mtime: -1
         }
     })
-    logger.info('Rankings:', filter, bets.count())
+    logger.info('Time rankings:', filter, bets.count())
     return baseRank(bets);
 }
 
@@ -73,6 +73,7 @@ function topicRank(topic, top) {
         limit: 10000, // fortest, should not limits
     })
     var rank = baseRank(bets, top, Topics.findOne(topic).price);
+    logger.info('Topic rankings:', topic);
     return rank.map(function(v, index, arr) {
         var r = v.real;
         v.nominal = Consts.topicRankMap[r-1][1];
