@@ -1,19 +1,3 @@
-Meteor.startup(function() {
-    return;
-    // listen on topic insert
-    Topics.after.insert(function(userId, doc) {
-        // set a timer for open topic
-        Meteor.setTimeout(function() {
-            // TODO: set the status of topic to BEGIN
-            // begin to calc periodly
-            calc(doc);
-        }, doc.begin - Date.now())
-    })
-    Topics.find({
-        status: 'open'
-    }).forEach(calc)
-})
-
 function calc(topic) {
     ~ function iter() {
         var isClose = topic.status == 'close' || topic.end < Date.now();
@@ -129,7 +113,7 @@ function init() {
     topic.observe({
             added: calc
         })
-        // watch for topic status changes, then close related bets auto.
+    // watch for topic status changes, then close related bets auto.
     Topics.find({
             status: 'close'
         }).observe({
@@ -145,7 +129,13 @@ function init() {
                 logger.info('Topic closed, id:' + topic._id);
             }
         })
-        // watch for bets status changes, then calc the scores of bet
+    // watch for bets status changes, then calc the scores of bet
+    Bets.find({status: 'close', settled: {$exists: false}}).observe({
+        added: function (bet) {
+            Bets.update(bet._id, {$set:{ settled:true}});
+            Meteor.users.update({_id:bet.user}, {$inc: {'fortune.scores': bet.close - bet.open}})
+        }
+    })
 }
 Calc = {
     init: init,

@@ -270,12 +270,15 @@ Meteor.startup(function() {
         })
     })
 
-    Restivus.addRoute('catalogs/', {}, {
+    Restivus.addRoute('fortune/', {}, {
         get: resp(function() {
-            return Consts.catalogs;
+            var user = this.userId || this.queryParams.user; // fortest
+            return {
+                scores: total(user) - FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}).fortune.scores,
+            };
         })
     })
-    Restivus.addRoute('rank/', {}, {
+    Restivus.addRoute('test/', {}, {
         get: resp(function() {
             // return Rank.day(Date.now());
             return moment().format('YYYY-MM-DD');
@@ -440,6 +443,15 @@ function update(collection, id, selector, defualts, override) {
     return collection.findOne(id)
 }
 
+function total(user) {
+    var bets = Bets.find({user: user, status: 'open'}).fetch();
+    bets = populate('topic', bets);
+    var floating = _.reduce(bets, function (memo,v) {
+        return memo + v.topic.price - v.open;
+    }, 0);
+    return Meteor.users.findOne(user).fortune.scores + floating;
+}
+
 function resp(fn) {
     return function() {
         var data = fn.call(this);
@@ -450,4 +462,6 @@ function resp(fn) {
     }
 }
 
-
+Api= {
+    total: total
+};
