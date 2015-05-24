@@ -147,32 +147,9 @@ Meteor.startup(function() {
         get: resp(function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
-            var current = Prices.current(topic);
-            var counter = {}
-            Bets.find({
-                topic: topic
-            }, {
-                limit: 10000,
-                sort: {
-                    mtime: -1
-                }
-            }).forEach(function(doc, index) {
-                var user = doc.user;
-                if (!counter[user]) counter[user] = 0;
-                counter[user] += (doc.close || current) - doc.open;
-            })
-            var scores = _.map(counter, function(v, k) {
-                return {
-                    user: k,
-                    scores: v
-                };
-            })
-            var tops = _.sortBy(scores, 'scores').slice(-top).reverse().map(function(v) {
-                v.user = Meteor.users.findOne(v.user);
-                delete v.user.services;
-                return v;
-            });
-            return tops;
+            var rank = Rank.topicRank(topic, top);
+            rank = populateUser(rank);
+            return rank;
         })
     })
     Restivus.addRoute('followers', {}, {
@@ -307,7 +284,7 @@ Meteor.startup(function() {
             var rank = layerRoute.call(this, Rankings, 'rankingId', {
             }, query, option);
             if (this.params.rankingId) {
-                rank.list = populate('user', rank.list);
+                rank.list = populateUser(rank.list);
             }
             return rank;
         })
@@ -412,19 +389,25 @@ function getAll(collection, selector, query, option) {
     }
 }
 
-function populate(key, docs) {
+function populate(key, docs, option) {
     docs = docs || [];
     var ids = _.map(docs, function (v) {
         return v[key];
     })
     var map = {};
-    Models[key].find({_id: {$in: ids}}).forEach(function (v) {
+    option = option || {};
+    Models[key].find({_id: {$in: ids}}, option).forEach(function (v) {
         map[v._id] = v;
     })
     docs.forEach(function (v) {
         v[key] = map[v[key]];
     })
     // TODO: filter secret fileds
+    return docs;
+}
+
+function populateUser(docs) {
+    docs = populate('user', docs, {fields: {services:0}});
     return docs;
 }
 

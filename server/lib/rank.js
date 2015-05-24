@@ -1,10 +1,10 @@
-function rank(bets, top) {
+function baseRank(bets, top, base) {
     top = top || Meteor.users.find().count();
     var counter = {}
     bets.forEach(function(doc, index) {
         var user = doc.user;
         if (!counter[user]) counter[user] = 0;
-        counter[user] += (doc.close) - doc.open;
+        counter[user] += (doc.close || base) - doc.open;
     })
     var scores = _.map(counter, function(v, k) {
         return {
@@ -12,8 +12,16 @@ function rank(bets, top) {
             scores: v
         };
     })
-    var tops = _.sortBy(scores, 'scores').slice(-top).reverse()
-    return tops;
+    var tops = _.sortBy(scores, 'scores').reverse()
+    tops.map(function(v, index, arr) {
+        index += 1;
+        var r = Math.ceil(index / arr.length * 100);
+        v.index = index;
+        v.real = r;
+        v.real2 = Math.ceil(r/10)*10;
+        return v;
+    });
+    return tops.slice(0, top);
 }
 
 function dayRank(time, catalog) {
@@ -21,15 +29,9 @@ function dayRank(time, catalog) {
     var day = hour * 24;
     var rank = timeRank(time, day, catalog && {catalog: catalog});
     return rank.map(function(v, index, arr) {
-        // v.user = Meteor.users.findOne(v.user);
-        // delete v.user.services;
-        index += 1;
-        var r = Math.ceil(index / arr.length * 100);
-        v.index = index;
-        v.real = r;
-        v.real2 = Math.ceil(r/10)*10;
-        // v.nominal = Consts.topicRankMap[r-1][1];
-        // v.mark = Consts.topicRankMap[r-1][2];
+        var r = v.real;
+        // v.nominal = Consts.dayRankMap[r-1][1];
+        // v.mark = Consts.dayRankMap[r-1][2];
         return v;
     });
 }
@@ -53,7 +55,7 @@ function timeRank(time, scope, filter) {
         }
     })
     logger.info('Rankings:', filter, bets.count())
-    return rank(bets);
+    return baseRank(bets);
 }
 
 function filterTopic(filter) {
@@ -64,8 +66,24 @@ function filterTopic(filter) {
     return ids;
 }
 
+function topicRank(topic, top) {
+    var bets = Bets.find({
+        topic: topic
+    }, {
+        limit: 10000, // fortest, should not limits
+    })
+    var rank = baseRank(bets, top, Topics.findOne(topic).price);
+    return rank.map(function(v, index, arr) {
+        var r = v.real;
+        v.nominal = Consts.topicRankMap[r-1][1];
+        v.mark = Consts.topicRankMap[r-1][2];
+        return v;
+    });
+}
+
 Rank = {
     day: dayRank,
     time: timeRank,
-    rank: rank,
+    rank: baseRank,
+    topicRank: topicRank,
 }
