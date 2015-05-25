@@ -147,8 +147,8 @@ Meteor.startup(function() {
         get: resp(function() {
             var top = this.queryParams.top || 10;
             var topic = this.params.topicId;
-            var rank = Rankings.findOne({type:'topic', topic: topic}, {sort:{mtime:-1}});
-            rank.list = populateUser(rank.list);
+            var rank = Rankings.findOne({type:'topic', topic: topic}, {sort:{mtime:-1}}) || {};
+            rank.list = populateUser(rank.list||[]);
             if (this.queryParams.user) {
                 var my = null;
                 for (var k in rank.list) {
@@ -447,12 +447,19 @@ function total(user) {
     var bets = Bets.find({user: user, status: 'open'}).fetch();
     bets = populate('topic', bets);
     var floating = _.reduce(bets, function (memo,v) {
-        return memo + v.topic.price - v.open;
+        return memo + profit(v, v.topic);
     }, 0);
     var u = Meteor.users.findOne(user);
     var scores = u.fortune ? u.fortune.scores : 0;
     return scores + floating;
 }
+
+function profit(bet, topic) {
+    var close = topic ? (typeof topic === 'object' ? topic.price : topic) : bet.close;
+    var open = bet.open;
+    var delta = close - open;
+    return bet.attitude == 'postive' ? delta : -delta;
+} 
 
 function resp(fn) {
     return function() {
@@ -465,5 +472,6 @@ function resp(fn) {
 }
 
 Api= {
-    total: total
+    total: total,
+    profit: profit,
 };

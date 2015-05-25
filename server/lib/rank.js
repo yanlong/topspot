@@ -1,10 +1,10 @@
 function baseRank(bets, top, base) {
     top = top || Meteor.users.find().count();
     var counter = {}
-    bets.forEach(function(doc, index) {
-        var user = doc.user;
+    bets.forEach(function(bet, index) {
+        var user = bet.user;
         if (!counter[user]) counter[user] = 0;
-        counter[user] += (doc.close || base) - doc.open;
+        counter[user] += Api.profit(bet, bet.close || base);
     })
     var scores = _.map(counter, function(v, k) {
         return {
