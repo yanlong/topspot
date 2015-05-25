@@ -25,7 +25,8 @@ Meteor.startup(function() {
                         subcatalog: null,
                     }
                     var topics = getAll.call(this, Topics, null, query);
-                    return topics;
+
+                    return pullRank(topics);
                 })
             },
             get: {
@@ -474,6 +475,18 @@ function resp(fn) {
             data: data,
         }
     }
+}
+
+function pullRank(topics) {
+    // return topics;
+    topics.forEach(function (topic) {
+        topic.ranking = Rankings.findOne({topic:topic._id, type:'topic'}, {sort:{mtime:-1}}) || [];
+        if (topic.ranking.list) {
+            topic.ranking.list = topic.ranking.list.slice(0,1);
+            topic.ranking.list = populateUser(topic.ranking.list);
+        }
+    })
+    return topics;
 }
 
 Api= {
