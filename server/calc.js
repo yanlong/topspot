@@ -34,7 +34,7 @@ function compute(topic) {
     }
     logger.trace(newPrice)
     // Prices.insert(newPrice);
-    Topics.update(topic._id, {$set: {price: newPrice.price, _NO_MODIFY:true}});
+    Topics.update(topic._id, {$set: {price: parseInt(newPrice.price), _NO_MODIFY:true}});
 }
 
 function getP(p0, a, b) {

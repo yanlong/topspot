@@ -449,7 +449,9 @@ function total(user) {
     var floating = _.reduce(bets, function (memo,v) {
         return memo + v.topic.price - v.open;
     }, 0);
-    return Meteor.users.findOne(user).fortune.scores + floating;
+    var u = Meteor.users.findOne(user);
+    var scores = u.fortune ? u.fortune.scores : 0;
+    return scores + floating;
 }
 
 function resp(fn) {
