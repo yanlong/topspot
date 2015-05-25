@@ -284,6 +284,11 @@ Meteor.startup(function() {
             return moment().format('YYYY-MM-DD');
         })
     })
+    Restivus.addRoute('catalogs/', {}, {
+        get: resp(function() {
+            return Consts.catalogs;
+        })
+    })
     Restivus.addRoute('rankings/:rankingId?', {}, {
         get: resp(function() {
             var query = {
