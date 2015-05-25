@@ -1,4 +1,5 @@
-var UPYUN = Meteor.require('upyun');
+return ; // close
+var UPYUN = Meteor.npmRequire('upyun');
 
 var upyun = new UPYUN('caogen-images', 'topspot', 'caogen123', 'ctcc', 'legacy');
 
