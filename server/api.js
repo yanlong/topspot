@@ -132,8 +132,43 @@ Meteor.startup(function() {
         post: resp(function () {
             var selector = {
                 comment: this.params.commentId,
+                type: comment,
             };
             return insert.call(this, Favors, selector);
+        })
+    })
+    Restivus.addRoute('topics/:topicId/favors/:favorId?', {}, {
+        get: resp(function() {
+            var query = {
+                user: null,
+            }
+            return layerRoute.call(this, Favors, 'favorId', {
+                topic: 'topicId',
+            }, query);
+        }),
+        post: resp(function () {
+            var selector = {
+                topic: this.params.topicId,
+                user: this.userId || this.queryParams.user,
+                type: 'topic',
+            };
+            check(selector, {
+                topic: String,
+                user: String,
+                type: 'topic',
+            })
+            return insert.call(this, Favors, selector);
+        })
+    })
+    Restivus.addRoute('favors/', {}, {
+        get: resp(function() {
+            var selector = {
+                user: this.userId || this.queryParams.user,
+            };
+            var query = {
+                type: 1,
+            }
+            return getAll.call(this, Favors, selector, query);
         })
     })
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
