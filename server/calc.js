@@ -126,6 +126,11 @@ function init() {
                         status: 'close'
                     }
                 }, {multi: true});
+                // Mark ranking of topic is final
+                var rank = Rankings.findOne({type:'topic', topic:topic._id}, {sort:{mtime:-1}});
+                if (rank) {
+                    Rankings.update(rank._id, {$set: {isFinal:true}});
+                }
                 logger.info('Topic closed, id:' + topic._id);
             }
         })
@@ -141,6 +146,16 @@ function init() {
             Meteor.users.update(user._id, {$set: {'fortune.scores':0}});
         }
     })
+    // Calc credits.
+    Rankings.find({type:'topic', settled:{$exists: false}, isFinal: true}).observe({
+        added: function (rank) {
+            rank.list.forEach(function (v,k) {
+                Meteor.users.update(v.user, {$inc: {'fortune.credits': Consts.topicRankMap[v.real-1][3]}});
+            })
+            Rankings.update(rank._id, {$set: {settled:true}});
+        }
+    })
+
 }
 Calc = {
     init: init,

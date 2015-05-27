@@ -3,8 +3,8 @@ SyncedCron.add({
     schedule: function(parser) {
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
-        return parser.text('every 1 minutes');
-        // return parser.text('at 00:00 am');
+        // return parser.text('every 1 minutes');
+        return parser.text('at 00:00 am');
     },
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
@@ -24,24 +24,25 @@ SyncedCron.add({
     schedule: function(parser) {
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
-        return parser.text('every 1 minutes');
+        return parser.text('every 10 minutes');
         // return parser.text('at 00:00 am');
     },
     job: function() {
         Topics.find({status: 'open'}).forEach(function(topic) {
-            Models.rankings.insert({
+            var doc = {
                 list: topicRank(topic),
                 type: 'topic',
                 topic: topic._id,
                 // date: moment().format('YYYY-MM-DD'),
-            })
+            };
+            Models.rankings.insert(doc)
         })
         return;
     }
 });
 
 SyncedCron.add({
-    name: 'Calc price of topics.',
+    name: 'Calc price of topics',
     schedule: function(parser) {
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
@@ -64,8 +65,8 @@ SyncedCron.add({
     schedule: function(parser) {
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
-        return parser.text('every 1 minutes'); // every day
-        // return parser.text('at 00:00 am');
+        // return parser.text('every 1 minutes'); // every day
+        return parser.text('at 00:00 am');
     },
     job: function() {
         Meteor.users.find().forEach(function(user) {
