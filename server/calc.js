@@ -141,9 +141,14 @@ function init() {
             Meteor.users.update({_id:bet.user}, {$inc: {'fortune.scores': Api.profit(bet)}})
         }
     })
-    Meteor.users.find({fortune:{$exists:false}}).observe({
+    Meteor.users.find({'fortune.scores':{$exists:false}}).observe({
         added: function (user) {
             Meteor.users.update(user._id, {$set: {'fortune.scores':0}});
+        }
+    })    
+    Meteor.users.find({'fortune.credits':{$exists:false}}).observe({
+        added: function (user) {
+            Meteor.users.update(user._id, {$set: {'fortune.credits':0}});
         }
     })
     // Calc credits.
