@@ -160,7 +160,7 @@ Meteor.startup(function() {
             return insert.call(this, Favors, selector);
         })
     })
-    Restivus.addRoute('favors/', {}, {
+    Restivus.addRoute('favors/:favorId?', {}, {
         get: resp(function() {
             var selector = {
                 user: this.userId || this.queryParams.user,
@@ -169,6 +169,9 @@ Meteor.startup(function() {
                 type: 1,
             }
             return getAll.call(this, Favors, selector, query);
+        }),
+        delete: resp(function() {
+            return Favors.remove(this.params.favorId);
         })
     })
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
@@ -323,6 +326,25 @@ Meteor.startup(function() {
     Restivus.addRoute('catalogs/', {}, {
         get: resp(function() {
             return Consts.catalogs;
+        })
+    })
+    Restivus.addRoute('followcounts/', {}, {
+        get: resp(function() {
+            var user = this.userId || this.queryParams.user;
+            return {
+                followers: Follows.find({target:user}).count(),
+                following: Follows.find({user:user}).count(),
+            };
+        })
+    })
+    Restivus.addRoute('relationship/', {}, {
+        get: resp(function() {
+            var user = this.userId || this.queryParams.user;
+            var target = this.queryParams.target;
+            return {
+                follower: !!Follows.find({target:user, user:target}).count(),
+                following: !!Follows.find({user:user, target:target}).count(),
+            };
         })
     })
     Restivus.addRoute('rankings/:rankingId?', {}, {
