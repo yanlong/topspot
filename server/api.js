@@ -167,6 +167,7 @@ Meteor.startup(function() {
             };
             var query = {
                 type: 1,
+                topic:1,
             }
             return getAll.call(this, Favors, selector, query);
         }),
