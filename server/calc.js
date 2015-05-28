@@ -123,7 +123,8 @@ function init() {
                     status: 'open'
                 }, {
                     $set: {
-                        status: 'close'
+                        status: 'close',
+                        close: topic.price || topic.open || 0,
                     }
                 }, {multi: true});
                 // Mark ranking of topic is final
