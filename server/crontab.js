@@ -74,6 +74,7 @@ SyncedCron.add({
                 user: user._id,
                 fortune: {
                     scores: Api.total(user._id),
+                    base: Api.base(user._id),
                 },
                 date: moment().format('YYYY-MM-DD'),
             })

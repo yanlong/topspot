@@ -512,9 +512,14 @@ function total(user) {
     var floating = _.reduce(bets, function (memo,v) {
         return memo + profit(v, v.topic);
     }, 0);
+    var scores = base(user)
+    return scores + floating;
+}
+
+function base(user) {
     var u = Meteor.users.findOne(user);
     var scores = u.fortune ? u.fortune.scores : 0;
-    return scores + floating;
+    return scores;
 }
 
 function profit(bet, topic) {
@@ -548,5 +553,6 @@ function pullRank(topics) {
 
 Api= {
     total: total,
+    base: base,
     profit: profit,
 };
