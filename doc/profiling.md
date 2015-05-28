@@ -21,3 +21,14 @@ db['system.profile'].group({
 ['bets', 'prices', 'comments', 'favors', 'follows', 'rankings'].forEach(function (v) {
     db[v].drop();
 })
+
+## restore user scores
+function restoreFortune(user) {
+    var count = 0;
+    db.bets.find({status:'close',user:user}).forEach(function (doc) {
+        var delta = doc.close - doc.open;
+
+        count += doc.attitude == 'postive' ? delta : -delta;
+    })
+    db.users.update({_id:user}, {$set:{'fortune.scores': count}});
+}
