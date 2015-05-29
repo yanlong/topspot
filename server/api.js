@@ -206,18 +206,46 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('followers', {}, {
         get: resp(function() {
+            var user = this.userId || this.queryParams.user; // fortest
             var selector = {
-                target: this.userId || this.queryParams.user, // fortest
+                target: user
             }
-            return getAll.call(this, Follows, selector, {});
+            var followers = getAll.call(this, Follows, selector, {});
+            var selector = {
+                user: user,
+                target: {$in: followers.map(function (v) {return _.isObject(v.user) ? v.user._id : v.user})},
+            };
+            var following = Follows.find(selector,{target:1}).fetch();
+            following = _.reduce(following, function (memo, v) {
+                memo[v.target] = true;
+                return memo;
+            }, {});
+            followers.forEach(function (v) {
+                v.friend = !!following[_.isObject(v.user) ? v.user._id : v.user];
+            })
+            return followers;
         })
     })
     Restivus.addRoute('following', {}, {
         get: resp(function() {
+            var user = this.userId || this.queryParams.user; // fortest
             var selector = {
-                user: this.userId || this.queryParams.user, // fortest
+                user: user,
             }
-            return getAll.call(this, Follows, selector, {});
+            var following = getAll.call(this, Follows, selector, {});
+            var selector = {
+                target: user,
+                user: {$in: following.map(function (v) {return _.isObject(v.target) ? v.target._id : v.target})},
+            };
+            var followers = Follows.find(selector,{user:1}).fetch();
+            followers = _.reduce(followers, function (memo, v) {
+                memo[v.user] = true;
+                return memo;
+            }, {});
+            following.forEach(function (v) {
+                v.friend = !!followers[_.isObject(v.target) ? v.target._id : v.target];
+            })
+            return following;
         })
     })
     Restivus.addRoute('follows/:followId?', {}, {
@@ -250,7 +278,10 @@ Meteor.startup(function() {
             }), _.map(following, function (v) {
                 return v.target
             }))
-            return Meteor.users.find({_id:{$in:friends}}).fetch();
+            friends = friends.map(function (v) {
+                return {user:v};
+            })
+            return populateUser(friends);
         })
     })
     Restivus.addRoute('register', {}, {
