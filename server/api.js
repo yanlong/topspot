@@ -157,7 +157,7 @@ Meteor.startup(function() {
                 user: String,
                 type: 'topic',
             })
-            return insert.call(this, Favors, selector);
+            return insert.call(this, Favors, selector, null, null, true);
         })
     })
     Restivus.addRoute('favors/:favorId?', {}, {
@@ -497,13 +497,18 @@ function populateUser(docs) {
     return docs;
 }
 
-function insert(collection, selector, defualts, override) {
+function insert(collection, selector, defualts, override, upsert) {
     var data = {};
     defualts = defualts || {};
     override = override || {};
     _.extend(data, defualts, this.bodyParams, selector, override);
-    var id = collection.insert(data);
-    return collection.findOne(id)
+    if (upsert) {
+        var res = collection.update(data, data, {upsert:true})
+        return collection.findOne(data);
+    } else {
+        var id = collection.insert(data);
+        return collection.findOne(id)
+    }
 }
 
 function update(collection, id, selector, defualts, override) {

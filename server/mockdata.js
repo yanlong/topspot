@@ -89,7 +89,7 @@ Meteor.startup(function() {
             replyTo: '',
         })
         var count = Utils.rand();
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < 1; i++) {
             initFavors(i, c, userId);
         }
     }
@@ -97,6 +97,7 @@ Meteor.startup(function() {
     function initFavors(index, commentId, userId) {
         var f = Favors.insert({
             user: userId,
+            type: 'comment',
             comment: commentId,
         })
     }
