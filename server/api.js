@@ -468,24 +468,32 @@ function getAll(collection, selector, query, option) {
 }
 
 function populate(key, docs, option) {
+    var modelMap = {
+        target: 'user',
+    }
     docs = docs || [];
     var ids = _.map(docs, function (v) {
         return v[key];
     })
     var map = {};
     option = option || {};
-    Models[key].find({_id: {$in: ids}}, option).forEach(function (v) {
+
+    var model = Models[key] || Models[modelMap[key]];
+    // TODO: filter secret fileds
+    if (model === Meteor.users) {
+        option = {fields: {services:0, 'profile.phone':0, fortune:0, emails:0}};
+    }
+    model.find({_id: {$in: ids}}, option).forEach(function (v) {
         map[v._id] = v;
     })
     docs.forEach(function (v) {
         v[key] = map[v[key]];
     })
-    // TODO: filter secret fileds
     return docs;
 }
 
 function populateUser(docs) {
-    docs = populate('user', docs, {fields: {services:0}});
+    docs = populate('user', docs);
     return docs;
 }
 
