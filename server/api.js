@@ -340,6 +340,20 @@ Meteor.startup(function() {
             return getAll.call(this, Bets, selector, query);
         })
     })
+    Restivus.addRoute('credits/', {}, {
+        get: resp(function() {
+            var selector = {
+                user: this.userId || this.queryParams.user, // fortest
+            }
+            var query = {
+                type: null,
+                topic: null,
+                ranking: null,
+            }
+            // return selector;
+            return getAll.call(this, Credits, selector, query);
+        })
+    })
 
     Restivus.addRoute('fortune/', {}, {
         get: resp(function() {

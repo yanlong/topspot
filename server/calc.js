@@ -152,11 +152,21 @@ function init() {
             Meteor.users.update(user._id, {$set: {'fortune.credits':0}});
         }
     })
-    // Calc credits.
+    // Calc credits after topic close.
     Rankings.find({type:'topic', settled:{$exists: false}, isFinal: true}).observe({
         added: function (rank) {
             rank.list.forEach(function (v,k) {
-                Meteor.users.update(v.user, {$inc: {'fortune.credits': Consts.topicRankMap[v.real-1][3]}});
+                var credits = Consts.topicRankMap[v.real-1][3];
+                Meteor.users.update(v.user, {$inc: {'fortune.credits': credits}});
+                var c = {
+                    user: v.user,
+                    ranking: rank._id,
+                    topic: rank.topic,
+                    type: rank.type,
+                    credits: credits,
+                    detail: v,
+                };
+                Credits.insert(c);
             })
             Rankings.update(rank._id, {$set: {settled:true}});
         }
