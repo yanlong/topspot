@@ -162,9 +162,10 @@ function init() {
                     user: v.user,
                     ranking: rank._id,
                     topic: rank.topic,
-                    type: rank.type,
+                    source: rank.type,
                     credits: credits,
                     detail: v,
+                    type: 'in',
                 };
                 Credits.insert(c);
             })

@@ -349,6 +349,7 @@ Meteor.startup(function() {
                 type: null,
                 topic: null,
                 ranking: null,
+                source: null,
             }
             // return selector;
             return getAll.call(this, Credits, selector, query);
