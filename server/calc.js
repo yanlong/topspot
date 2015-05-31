@@ -169,6 +169,7 @@ function init() {
                 Credits.insert(c);
             })
             Rankings.update(rank._id, {$set: {settled:true}});
+            logger.info('Calc credits done, ranking:', rank._id);
         }
     })
 

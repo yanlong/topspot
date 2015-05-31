@@ -36,13 +36,24 @@ function dayRank(time, catalog) {
     });
 }
 
+function monthRank(now, catalog) {
+    var ten = 1000*60*10;
+    var begin = moment(now - ten).startOf('month').unix() * 1000;
+    var end = (moment(now).endOf('month').unix() + 1) * 1000;
+    return _timeRank(begin, end, catalog && {catalog: catalog})
+}
+
 function timeRank(time, scope, filter) {
     var begin = Math.floor(time/scope) * scope;
     var end = begin + scope - 1;
+    return _timeRank(begin, end, filter);
+}
+
+function _timeRank(begin, end, filter) {
     var selector = {
         status: 'close',
         mtime: {
-            $gt: begin,
+            $gte: begin,
             $lt: end,
         }
     };
@@ -85,6 +96,7 @@ function topicRank(topic, top) {
 
 Rank = {
     day: dayRank,
+    month: monthRank,
     time: timeRank,
     rank: baseRank,
     topicRank: topicRank,

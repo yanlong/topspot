@@ -20,6 +20,25 @@ SyncedCron.add({
 });
 
 SyncedCron.add({
+    name: 'Calc month rankings',
+    schedule: function(parser) {
+        return parser.cron('0 0 1 */1 *');
+        // return parser.cron('* * * * *');
+    },
+    job: function() {
+        Consts.catalogList.forEach(function(catalog) {
+            Models.rankings.insert({
+                list: Rank.month(Date.now(), catalog == 'All'? null:catalog),
+                type: 'month',
+                catalog: catalog,
+                date: moment().format('YYYY-MM'),
+            })
+        })        
+        return;
+    }
+});
+
+SyncedCron.add({
     name: 'Calc topic rankings',
     schedule: function(parser) {
         // parser is a later.parse object
