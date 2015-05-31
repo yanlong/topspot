@@ -373,9 +373,11 @@ Meteor.startup(function() {
         get: resp(function() {
             var user = this.userId || this.queryParams.user;
             var target = this.queryParams.target;
+            var follower = Follows.findOne({target:user, user:target});
+            var following = Follows.findOne({user:user, target:target});
             return {
-                follower: !!Follows.find({target:user, user:target}).count(),
-                following: !!Follows.find({user:user, target:target}).count(),
+                follower:  follower && follower._id,
+                following: following && following._id,
             };
         })
     })
