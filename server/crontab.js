@@ -8,7 +8,7 @@ SyncedCron.add({
     },
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
-            Models.rankings.insert({
+            Rankings.insert({
                 list: Rank.day(Date.now(), catalog == 'All'? null:catalog),
                 type: 'day',
                 catalog: catalog,
@@ -27,7 +27,7 @@ SyncedCron.add({
     },
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
-            Models.rankings.insert({
+            Rankings.insert({
                 list: Rank.month(Date.now(), catalog == 'All'? null:catalog),
                 type: 'month',
                 catalog: catalog,
@@ -54,7 +54,7 @@ SyncedCron.add({
                 topic: topic._id,
                 // date: moment().format('YYYY-MM-DD'),
             };
-            Models.rankings.insert(doc)
+            Rankings.insert(doc)
         })
         return;
     }

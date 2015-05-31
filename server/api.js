@@ -491,6 +491,11 @@ function getAll(collection, selector, query, option) {
         option.sort[self.queryParams[v]] = v == '_desc' ? -1: 1;
     })
     selector = _.extend(selector, query, search);
+    _.each(selector, function (v, k) {
+        if (_.isString(v) && v.split(',').length > 1) {
+            selector[k] = {$in: v.split(',')}
+        }
+    })
     var records = collection.find(selector, option).fetch();
     if (this.queryParams._distinct) {
         var key = this.queryParams._distinct;
@@ -516,6 +521,14 @@ function getAll(collection, selector, query, option) {
 }
 
 function populate(key, docs, option) {
+    var res = [];
+    key.split(',').forEach(function (v) {
+        res = _populate(v, docs, option);
+    })
+    return res;
+}
+
+function _populate(key, docs, option) {
     var modelMap = {
         target: 'user',
     }
