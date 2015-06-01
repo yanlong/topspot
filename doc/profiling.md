@@ -32,3 +32,23 @@ function restoreFortune(user) {
     })
     db.users.update({_id:user}, {$set:{'fortune.scores': count}});
 }
+
+## update date of rankings
+function updateDayRankings() {
+    db.rankings.find({
+        type: 'day'
+    }).forEach(function(v) {
+        var right = new Date(new Date(v.date) - 1000 * 60 * 60 * 24);
+        var day = right.getDate();
+        var mon = ('0' + (right.getMonth() + 1)).slice(-2);
+        var date = '2015-' + mon + '-' + day;
+        print(v.date, '->', date);
+        db.rankings.update({
+            _id: v._id
+        }, {
+            $set: {
+                date: date
+            }
+        });
+    })
+}
