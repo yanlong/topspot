@@ -217,11 +217,11 @@ Meteor.startup(function() {
             };
             var following = Follows.find(selector,{target:1}).fetch();
             following = _.reduce(following, function (memo, v) {
-                memo[v.target] = true;
+                memo[v.target] = v._id;
                 return memo;
             }, {});
             followers.forEach(function (v) {
-                v.friend = !!following[_.isObject(v.user) ? v.user._id : v.user];
+                v.friend = following[_.isObject(v.user) ? v.user._id : v.user];
             })
             return followers;
         })
@@ -239,11 +239,11 @@ Meteor.startup(function() {
             };
             var followers = Follows.find(selector,{user:1}).fetch();
             followers = _.reduce(followers, function (memo, v) {
-                memo[v.user] = true;
+                memo[v.user] = v._id;
                 return memo;
             }, {});
             following.forEach(function (v) {
-                v.friend = !!followers[_.isObject(v.target) ? v.target._id : v.target];
+                v.friend = followers[_.isObject(v.target) ? v.target._id : v.target];
             })
             return following;
         })
@@ -262,7 +262,7 @@ Meteor.startup(function() {
                 user: String,
                 target: String,
             })
-            return insert.call(this, Follows, this.bodyParams, {});
+            return insert.call(this, Follows, this.bodyParams, {}, null, true);
         }),
         delete: resp(function() {
             return Follows.remove(this.params.followId);
