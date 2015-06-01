@@ -12,7 +12,7 @@ SyncedCron.add({
                 list: Rank.day(Date.now(), catalog == 'All'? null:catalog),
                 type: 'day',
                 catalog: catalog,
-                date: moment().format('YYYY-MM-DD'),
+                date: moment(Date.now() - 1000*60*10).format('YYYY-MM-DD'),
             })
         })
         return;
