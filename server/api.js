@@ -5,43 +5,24 @@ Meteor.startup(function() {
         useAuth: true
     });
     Restivus.addCollection(Meteor.users);
-    Restivus.addCollection(Topics, {
-        routeOptions: {
+    Restivus.addRoute('topics/:topicId?', {}, {
+        get: {
             // authRequired: true,
             // roleRequired: 'admin'
-        },
-        endpoints: {
-            getAll: {
-                // authRequired: true,
-                // roleRequired: 'admin'
-                action: resp(function() {
-                    var query = {
-                        user: null,
-                        status: 'open',
-                        title: null,
-                        subtitle: null,
-                        tags: null,
-                        catalog: null,
-                        subcatalog: null,
-                    }
-                    var topics = getAll.call(this, Topics, null, query);
+            action: resp(function() {
+                var query = {
+                    user: null,
+                    status: null,
+                    title: null,
+                    subtitle: null,
+                    tags: null,
+                    catalog: null,
+                    subcatalog: null,
+                }
+                var topics = layerRoute.call(this, Topics, 'topicId', null, query);
 
-                    return pullRank(topics);
-                })
-            },
-            get: {
-                // authRequired: true,
-                // roleRequired: 'admin'
-            },
-            post: {
-                // authRequired: true,
-                action: resp(function() {
-                    var selector = {
-                        user: this.userId,
-                    }
-                    return insert.call(this, Topics, selector);
-                })
-            }
+                return pullRank(topics);
+            })
         }
     });
     // Restivus.addCollection(Bets, {
@@ -436,6 +417,7 @@ function phoneVerify(phone, code) {
 
 function layerRoute(collection, id, selector, query, option) {
     option = option || {};
+    selector = selector || {};
     var self = this;
     var data = null;
     _.each(selector, function(v, k) {
@@ -443,8 +425,8 @@ function layerRoute(collection, id, selector, query, option) {
     })
     var id = this.params[id];
     if (id) {
-        selector._id = id;
-        data = collection.findOne(selector); // TODO: support
+        data = getAll.call(this, collection, {_id:id}, null, option)
+        data = data && data[0];
     } else {
         data = getAll.call(this, collection, selector, query, option)
     }
@@ -615,8 +597,9 @@ function resp(fn) {
 }
 
 function pullRank(topics) {
-    // return topics;
-    topics.forEach(function (topic) {
+    // return topics
+    var collection = _.isArray(topics) ? topics : [topics];
+    collection.forEach(function (topic) {
         topic.ranking = Rankings.findOne({topic:topic._id, type:'topic'}, {sort:{mtime:-1}}) || [];
         if (topic.ranking.list) {
             topic.ranking.list = topic.ranking.list.slice(0,1);
