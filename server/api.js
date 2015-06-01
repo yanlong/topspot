@@ -388,6 +388,9 @@ Meteor.startup(function() {
             var option = {
                 fields: {list:0},
             }
+            if (this.params.rankingId) {
+                option = null;
+            }
             var rank = layerRoute.call(this, Rankings, 'rankingId', {
             }, query, option);
             if (this.params.rankingId) {
