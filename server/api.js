@@ -149,8 +149,10 @@ Meteor.startup(function() {
             var query = {
                 type: 1,
                 topic:1,
+                comment:1,
             }
-            return getAll.call(this, Favors, selector, query);
+            // return selector;
+            return layerRoute.call(this, Favors, 'favorId', selector, query);
         }),
         delete: resp(function() {
             return Favors.remove(this.params.favorId);
@@ -307,7 +309,7 @@ Meteor.startup(function() {
             Accounts.setPassword(user._id, this.queryParams.password);
         })
     })
-    Restivus.addRoute('bets/', {}, {
+    Restivus.addRoute('bets/:betId?', {}, {
         get: resp(function() {
             var selector = {
                 user: this.userId || this.queryParams.user, // fortest
@@ -317,11 +319,10 @@ Meteor.startup(function() {
                 status: null,
                 topic: null,
             }
-            // return selector;
-            return getAll.call(this, Bets, selector, query);
+            return layerRoute.call(this, Bets, 'betId', selector, query);
         })
     })
-    Restivus.addRoute('credits/', {}, {
+    Restivus.addRoute('credits/:creditId?', {}, {
         get: resp(function() {
             var selector = {
                 user: this.userId || this.queryParams.user, // fortest
@@ -332,8 +333,7 @@ Meteor.startup(function() {
                 ranking: null,
                 source: null,
             }
-            // return selector;
-            return getAll.call(this, Credits, selector, query);
+            return layerRoute.call(this, Credits, 'creditId', selector, query);
         })
     })
 
@@ -421,7 +421,7 @@ function layerRoute(collection, id, selector, query, option) {
     var self = this;
     var data = null;
     _.each(selector, function(v, k) {
-        selector[k] = self.params[v];
+        selector[k] = self.params[v] || v; // WARNING: hack! Support both ids map and key-value map;
     })
     var id = this.params[id];
     if (id) {
