@@ -31,7 +31,7 @@ SyncedCron.add({
                 list: Rank.month(Date.now(), catalog == 'All'? null:catalog),
                 type: 'month',
                 catalog: catalog,
-                date: moment().format('YYYY-MM'),
+                date: moment(Date.now() - 1000*60*10).format('YYYY-MM'),
             })
         })        
         return;
