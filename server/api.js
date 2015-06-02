@@ -1,4 +1,5 @@
 // API must be configured and built after startup!
+var useAuth = true;
 Meteor.startup(function() {
     // Global configuration
     Restivus.configure({
@@ -7,8 +8,6 @@ Meteor.startup(function() {
     Restivus.addCollection(Meteor.users);
     Restivus.addRoute('topics/:topicId?', {}, {
         get: {
-            // authRequired: true,
-            // roleRequired: 'admin'
             action: resp(function() {
                 var query = {
                     user: null,
@@ -25,23 +24,9 @@ Meteor.startup(function() {
             })
         }
     });
-    // Restivus.addCollection(Bets, {
-    //     routeOptions: {
-    //         // authRequired: true,
-    //         // roleRequired: 'admin'
-    //     },
-    //     endpoints: {
-    //         getAll: {
-    //             // authRequired: true,
-    //             // roleRequired: 'admin'
-    //         },
-    //         get: {
-    //             // authRequired: true,
-    //             // roleRequired: 'admin'
-    //         }
-    //     }
-    // });
-    Restivus.addRoute('topics/:topicId/bets/:betId?', {}, {
+    Restivus.addRoute('topics/:topicId/bets/:betId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var query = {
                 user: null,
@@ -53,11 +38,10 @@ Meteor.startup(function() {
         }),
         post: resp(function() {
             check(this.bodyParams, {
-                user: String,
                 attitude: Match.OneOf('postive', 'negtive'),
             })
             var selector = {
-                // user: this.userId, // fortest
+                user: this.userId,
                 topic: this.params.topicId,
             }
             var defualts = {
@@ -72,7 +56,7 @@ Meteor.startup(function() {
             check(this.bodyParams, {
             });
             var selector = {
-                // user: this.userId, // fortest
+                user: this.userId,
                 topic: this.params.topicId,
             }
             var defualts = {
@@ -93,14 +77,19 @@ Meteor.startup(function() {
                 topic: 'topicId'
             }, query);
         }),
-        post: resp(function () {
-            var selector = {
-                topic: this.params.topicId,
-            }
-            return insert.call(this, Comments, selector);
-        })
+        post: {
+            authRequired: useAuth,
+            action: resp(function () {
+                var selector = {
+                    topic: this.params.topicId,
+                }
+                return insert.call(this, Comments, selector);
+            })
+        }
     })
-    Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {}, {
+    Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var query = {
                 user: null,
@@ -118,19 +107,22 @@ Meteor.startup(function() {
             return insert.call(this, Favors, selector);
         })
     })
-    Restivus.addRoute('topics/:topicId/favors/:favorId?', {}, {
+    Restivus.addRoute('topics/:topicId/favors/:favorId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var query = {
-                user: null,
             }
-            return layerRoute.call(this, Favors, 'favorId', {
+            var selector = {
+                user: this.queryParams.user || this.userId,
                 topic: 'topicId',
-            }, query);
+            }
+            return layerRoute.call(this, Favors, 'favorId', selector, query);
         }),
         post: resp(function () {
             var selector = {
                 topic: this.params.topicId,
-                user: this.userId || this.queryParams.user,
+                user: this.userId,
                 type: 'topic',
             };
             check(selector, {
@@ -141,21 +133,26 @@ Meteor.startup(function() {
             return insert.call(this, Favors, selector, null, null, true);
         })
     })
-    Restivus.addRoute('favors/:favorId?', {}, {
+    Restivus.addRoute('favors/:favorId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var selector = {
-                user: this.userId || this.queryParams.user,
+                user: this.queryParams.user || this.userId,
             };
             var query = {
                 type: 1,
                 topic:1,
                 comment:1,
             }
-            // return selector;
             return layerRoute.call(this, Favors, 'favorId', selector, query);
         }),
         delete: resp(function() {
-            return Favors.remove(this.params.favorId);
+            var selector = {
+                _id: this.params.favorId,
+                user: this.userId,
+            }
+            return Favors.remove(selector);
         })
     })
     Restivus.addRoute('topics/:topicId/ticker/', {}, {
@@ -189,7 +186,7 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('followers', {}, {
         get: resp(function() {
-            var user = this.userId || this.queryParams.user; // fortest
+            var user = this.queryParams.user || this.userId;
             var selector = {
                 target: user
             }
@@ -211,7 +208,7 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('following', {}, {
         get: resp(function() {
-            var user = this.userId || this.queryParams.user; // fortest
+            var user = this.queryParams.user || this.userId;
             var selector = {
                 user: user,
             }
@@ -231,7 +228,9 @@ Meteor.startup(function() {
             return following;
         })
     })
-    Restivus.addRoute('follows/:followId?', {}, {
+    Restivus.addRoute('follows/:followId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function () {
             var query = {
                 user: 1,
@@ -242,13 +241,21 @@ Meteor.startup(function() {
         }),
         post: resp(function() {
             check(this.bodyParams, {
-                user: String,
                 target: String,
             })
-            return insert.call(this, Follows, this.bodyParams, {}, null, true);
+            // TODO: check user exists.
+            var doc = {
+                user: this.userId,
+                target: this.bodyParams.target,
+            }
+            return insert.call(this, Follows, doc, {}, null, true);
         }),
         delete: resp(function() {
-            return Follows.remove(this.params.followId);
+            var selector = {
+                user: this.userId,
+                _id: this.params.followId,
+            }
+            return Follows.remove(selector);
         })
     })
     Restivus.addRoute('friends', {}, {
@@ -290,6 +297,7 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('phone/verify', {}, {
         get: resp(function () {
+            // TODO: time limit
             check(this.queryParams, {
                 phone: String,
                 code: Match.Optional(String),
@@ -309,10 +317,12 @@ Meteor.startup(function() {
             Accounts.setPassword(user._id, this.queryParams.password);
         })
     })
-    Restivus.addRoute('bets/:betId?', {}, {
+    Restivus.addRoute('bets/:betId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var selector = {
-                user: this.userId || this.queryParams.user, // fortest
+                user: this.userId,
             }
             var query = {
                 attitude: null,
@@ -322,10 +332,12 @@ Meteor.startup(function() {
             return layerRoute.call(this, Bets, 'betId', selector, query);
         })
     })
-    Restivus.addRoute('credits/:creditId?', {}, {
+    Restivus.addRoute('credits/:creditId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var selector = {
-                user: this.userId || this.queryParams.user, // fortest
+                user: this.userId,
             }
             var query = {
                 type: null,
@@ -337,9 +349,11 @@ Meteor.startup(function() {
         })
     })
 
-    Restivus.addRoute('fortune/', {}, {
+    Restivus.addRoute('fortune/', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
-            var user = this.userId || this.queryParams.user; // fortest
+            var user = this.userId;
             return {
                 scores: total(user) - FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}).fortune.scores,
             };
@@ -356,18 +370,22 @@ Meteor.startup(function() {
             return Consts.catalogs;
         })
     })
-    Restivus.addRoute('followcounts/', {}, {
+    Restivus.addRoute('followcounts/', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
-            var user = this.userId || this.queryParams.user;
+            var user = this.queryParams.user || this.userId;
             return {
                 followers: Follows.find({target:user}).count(),
                 following: Follows.find({user:user}).count(),
             };
         })
     })
-    Restivus.addRoute('relationship/', {}, {
+    Restivus.addRoute('relationship/', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
-            var user = this.userId || this.queryParams.user;
+            var user = this.queryParams.user || this.userId;
             var target = this.queryParams.target;
             var follower = Follows.findOne({target:user, user:target});
             var following = Follows.findOne({user:user, target:target});
