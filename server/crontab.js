@@ -54,7 +54,7 @@ SyncedCron.add({
                 topic: topic._id,
                 // date: moment().format('YYYY-MM-DD'),
             };
-            Rankings.insert(doc)
+            Rankings.update({type:'topic', topic:topic._id}, {$set:doc}, {upsert:true});
         })
         return;
     }
