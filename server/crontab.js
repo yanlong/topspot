@@ -9,7 +9,7 @@ SyncedCron.add({
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
             Rankings.insert({
-                list: Rank.day(Date.now(), catalog == 'All'? null:catalog),
+                list: Rank.day(Date.now(), catalog == '总榜'? null:catalog),
                 type: 'day',
                 catalog: catalog,
                 date: moment(Date.now() - 1000*60*10).format('YYYY-MM-DD'),
@@ -28,7 +28,7 @@ SyncedCron.add({
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
             Rankings.insert({
-                list: Rank.month(Date.now(), catalog == 'All'? null:catalog),
+                list: Rank.month(Date.now(), catalog == '总榜'? null:catalog),
                 type: 'month',
                 catalog: catalog,
                 date: moment(Date.now() - 1000*60*10).format('YYYY-MM'),
