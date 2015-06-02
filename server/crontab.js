@@ -102,6 +102,37 @@ SyncedCron.add({
     }
 });
 
+SyncedCron.add({
+    name: 'Topic status watcher',
+    schedule: function(parser) {
+        return parser.cron('* * * * *');
+    },
+    job: function() {
+        Topics.find({
+            status: {$in: ['new','preopen','open']}
+        }).forEach(function (topic) {
+            var current = topic.status;
+            var begin = topic.begin;
+            var end = topic.end;
+            var after = current;
+            var now = Date.now();
+            var pre = 1000*60*15; // 15 mins
+            if (now < begin - pre) {
+                after = 'new';
+            } else if (now < begin) {
+                after = 'preopen';
+            } else if (end && now < end) {
+                after = 'close';
+            }
+            if (after !== current) {
+                Topics.update(topic._id, {$set: {status: after}});
+                logger.info('Topic status:', topic._id, current, '->', after);
+            }
+        })
+        return;
+    }
+});
+
 function topicRank(topic) {
     var pre = Rankings.findOne({type:'topic', topic: topic._id}, {sort:{mtime:-1}});
     var now = Rank.topicRank(topic._id);
