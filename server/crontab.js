@@ -122,6 +122,8 @@ SyncedCron.add({
             } else if (now < begin) {
                 after = 'preopen';
             } else if (end && now < end) {
+                after = 'open';
+            } else if (end && now >= end) {
                 after = 'close';
             }
             if (after !== current) {
