@@ -16,6 +16,9 @@ Template.topicCreate.events({
                 value = [$(e.target).find('[name=' + v.name + ']').attr('data-url')];
                 // alert(value)
             }
+            if (v.type == 'number') {
+                value = parseInt(value);
+            }
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();

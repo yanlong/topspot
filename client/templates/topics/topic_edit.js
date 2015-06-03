@@ -16,6 +16,12 @@ Template.topicEdit.events({
                 alert('Invaild value: ' + v.name);
                 return;
             }
+            if (v.type == 'datetime-local') {
+                value = Utils.datetime2timestamp(value);
+            }
+            if (v.type == 'number') {
+                value = parseInt(value);
+            }
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();
