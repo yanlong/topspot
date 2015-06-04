@@ -1,10 +1,6 @@
 function calc(topic) {
     ~ function iter() {
-        var isClose = topic.status == 'close' || topic.end < Date.now();
-        if (isClose) {
-            // TODO: Close the topic
-        } else {
-            // TODO: calc price and insert price object
+        if (topic.status === 'open') {
             compute(topic)
             Meteor.setTimeout(iter, 2000);
         }
