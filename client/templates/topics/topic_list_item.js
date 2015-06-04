@@ -3,7 +3,7 @@ Template.topicListItem.events({
         e.preventDefault();
         // alert('ffff'+this._id);
         if (confirm('确定删除？'))
-            Topics.remove(this._id);
+            Topics.update(this._id, {$set:{status:'deleted'}});
     },
     'click .topic-close': function(e) {
         e.preventDefault();
