@@ -4,7 +4,9 @@ Meteor.startup(function() {
     Restivus.configure({
         useAuth: true
     });
-    Restivus.addCollection(Meteor.users);
+    Restivus.addCollection(Meteor.users, {routeOptions:{
+        authRequired: true,
+    }});
     Restivus.addRoute('topics/:topicId?', {}, {
         get: {
             // authRequired: true,
