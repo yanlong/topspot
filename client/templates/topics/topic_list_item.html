@@ -5,16 +5,36 @@
       <h3><a href="{{pathFor 'topicPage'}}">{{title}}</a><span>{{domain}}</span></h3>
       <p>{{timestamp2datetime begin}} ~ {{timestamp2datetime end}}</p>
       <p>分类：{{catalog}}</p>
+      <p>真相值：{{price}}</p>
       <p>标签：{{tags}}</p>
       <p>状态：{{status}}</p>
       <p>
         <!-- submitted by {{user}}, -->
         <!-- <a href="{{pathFor 'topicPage'}}">Remove</a> -->
         <a class="remove" href="">Remove</a>
-        <a class="topic-close" href="">Close</a>
+        <!-- <a class="topic-close" href="">Close</a> -->
+        {{#if isOpen}}{{> closeButtons}}{{/if}}
         {{#if currentUser}}<a href="{{pathFor 'topicEdit'}}">Edit</a>{{/if}}
       </p>
     </div>
     <!-- <a href="{{pathFor 'topicPage'}}" class="discuss btn btn-default">详情</a> -->
+  </div>
+</template>
+
+<template name="closeButtons">
+  <div class="dropdown" style="display:inline-block;">
+    <a id="dLabel" data-target="#" href="http://example.com" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+      Close
+      <span class="caret"></span>
+    </a>
+
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+      <li role="presentation">
+        <a role="menuitem" class="topic-close" href="#">-100 {{negTag}}</a>
+      </li>
+      <li role="presentation">
+        <a role="menuitem" class="topic-close" href="#">+100 {{posTag}}</a>
+      </li>
+    </ul>
   </div>
 </template>
