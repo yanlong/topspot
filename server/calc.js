@@ -1,6 +1,7 @@
 function calc(topic) {
     ~ function iter() {
-        if (topic.status === 'open') {
+        var status = Topics.findOne(topic._id).status;
+        if (status === 'open') {
             compute(topic)
             Meteor.setTimeout(iter, 2000);
         }
