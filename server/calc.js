@@ -44,9 +44,9 @@ function getP(p0, a, b) {
     }
     var p = xx + p0;
     if (p > 100) {
-        return 100;
+        return 97;
     } else if (p < -100) {
-        return -100;
+        return -97;
     }
     return p;
 }
