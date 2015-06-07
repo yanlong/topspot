@@ -9,6 +9,7 @@
       "pem": "~/.ssh/id_rsa",
       "env": {
         "SIMULATOR" : "off",
+        "TP_MASTER" : 1,
         "NODE_ENV" : "development"
       }
     }

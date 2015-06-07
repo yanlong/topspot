@@ -148,4 +148,3 @@ function topicRank(topic) {
     return now;
 }
 
-SyncedCron.start();
