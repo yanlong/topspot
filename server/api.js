@@ -91,9 +91,14 @@ Meteor.startup(function() {
             var query = {
                 user: null,
             }
-            return layerRoute.call(this, Comments, 'commentId', {
+            var ret = layerRoute.call(this, Comments, 'commentId', {
                 topic: 'topicId'
             }, query);
+            var collection = _.isArray(ret) ? ret : [ret];
+            collection.forEach(function (v) {
+                v.nFavors = Favors.find({type:'comment', comment:v._id}).count();
+            })
+            return ret;
         }),
         post: resp(function () {
             var selector = {
