@@ -40,6 +40,7 @@ Meteor.startup(function() {
         }),
         post: resp(function() {
             check(this.bodyParams, {
+                user: String,
                 attitude: Match.OneOf('postive', 'negtive'),
             })
             var selector = {
@@ -56,7 +57,8 @@ Meteor.startup(function() {
         }),
         put: resp(function () {
             check(this.bodyParams, {
-            });
+                 user: String,
+           });
             var selector = {
                 user: this.userId,
                 topic: this.params.topicId,
@@ -243,6 +245,7 @@ Meteor.startup(function() {
         }),
         post: resp(function() {
             check(this.bodyParams, {
+                user: String,
                 target: String,
             })
             // TODO: check user exists.
