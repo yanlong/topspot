@@ -71,7 +71,9 @@ Meteor.startup(function() {
             return update.call(this, Bets, this.params.betId, selector, defualts, override);
         })
     })
-    Restivus.addRoute('topics/:topicId/comments/:commentId?', {}, {
+    Restivus.addRoute('topics/:topicId/comments/:commentId?', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var query = {
                 user: null,
@@ -80,9 +82,10 @@ Meteor.startup(function() {
                 topic: 'topicId'
             }, query);
             var collection = _.isArray(ret) ? ret : [ret];
+            var self = this;
             collection.forEach(function (v) {
                 v.nFavors = Favors.find({type:'comment', comment:v._id}).count();
-                var favored = Favors.findOne({type:'comment', comment:v._id, user:this.userId});
+                var favored = Favors.findOne({type:'comment', comment:v._id, user:self.userId});
                 v.favored = favored && favored._id;
             })
             return ret;
