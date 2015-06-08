@@ -109,7 +109,9 @@ Meteor.startup(function() {
             return insert.call(this, Comments, selector);
         })
     })
-    Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {}, {
+    Restivus.addRoute('topics/:topicId/comments/:commentId/favors/:favorId?', {
+        authRequired: true,
+    }, {
         get: resp(function() {
             var query = {
                 user: null,
@@ -122,9 +124,10 @@ Meteor.startup(function() {
         post: resp(function () {
             var selector = {
                 comment: this.params.commentId,
-                type: comment,
+                type: 'comment',
+                user: this.userId,
             };
-            return insert.call(this, Favors, selector);
+            return insert.call(this, Favors, selector, {}, {}, true);
         })
     })
     Restivus.addRoute('topics/:topicId/favors/:favorId?', {}, {
