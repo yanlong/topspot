@@ -57,8 +57,7 @@ Meteor.startup(function() {
         }),
         put: resp(function () {
             check(this.bodyParams, {
-                 user: String,
-           });
+            });
             var selector = {
                 user: this.userId,
                 topic: this.params.topicId,
