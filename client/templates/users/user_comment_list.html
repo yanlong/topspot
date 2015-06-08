@@ -1,0 +1,21 @@
+<template name="commentList">
+  <div class="posts page">
+    <div class="wrapper">
+      {{#each users}}
+        {{> commentListItem}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="commentListItem">
+  <div class="topic" id="{{_id}}">
+    <div class="topic-content">
+      <h3><a href="#">{{username}}</a></h3>
+      <p>注册时间: {{timestamp2datetime begin}}</p>
+      <p>id: {{_id}}</p>
+      <p>昵称: {{username}}</p>
+      <p>手机: {{profile.phone}}</p>
+    </div>
+  </div>
+</template>
