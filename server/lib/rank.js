@@ -15,7 +15,7 @@ function baseRank(bets, top, base) {
     var tops = _.sortBy(scores, 'scores').reverse()
     tops.map(function(v, index, arr) {
         index += 1;
-        var r = Math.ceil(index / arr.length * 100);
+        var r = arr.length > 100 ? Math.ceil(index / arr.length * 100) : index;
         v.index = index;
         v.real = r;
         v.real2 = Math.ceil(r/10)*10;
