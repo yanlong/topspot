@@ -4,7 +4,7 @@ SyncedCron.add({
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
         // return parser.text('every 1 minutes');
-        return parser.text('at 00:00 am');
+        return parser.text('at 10:00 pm');
     },
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
@@ -12,7 +12,7 @@ SyncedCron.add({
                 list: Rank.day(Date.now(), catalog == '总榜'? null:catalog),
                 type: 'day',
                 catalog: catalog,
-                date: moment(Date.now() - 1000*60*10).format('YYYY-MM-DD'),
+                date: moment(Date.now()).format('YYYY-MM-DD'),
             })
         })
         return;
