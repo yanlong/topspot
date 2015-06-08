@@ -465,7 +465,7 @@ function getAll(collection, selector, query, option) {
     if (this.queryParams._wd) {
         search = [];
         var reg = new RegExp(this.queryParams._wd);
-        ['title', 'subtitle', 'desc'].forEach(function (v) {
+        ['title', 'subtitle'].forEach(function (v) {
             var s = {};
             s[v] = reg;
             search.push(s)
