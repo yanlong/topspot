@@ -97,6 +97,8 @@ Meteor.startup(function() {
             var collection = _.isArray(ret) ? ret : [ret];
             collection.forEach(function (v) {
                 v.nFavors = Favors.find({type:'comment', comment:v._id}).count();
+                var favored = Favors.findOne({type:'comment', comment:v._id, user:this.userId});
+                v.favored = favored && favored._id;
             })
             return ret;
         }),
@@ -382,6 +384,34 @@ Meteor.startup(function() {
                 follower:  follower && follower._id,
                 following: following && following._id,
             };
+        })
+    })
+    Restivus.addRoute('feedbacks/:feedbackId?', {
+        authRequired: true,
+    }, {
+        get: resp(function() {
+            var selector = {
+                user: this.userId,
+            }
+            var query = {
+            }
+            return layerRoute.call(this, Feedbacks, 'feedbackId', selector, query);
+        }),
+        post: resp(function () {
+            check(this.bodyParams, {
+                os: String,
+                device: String,
+                version: String,
+                contact: String,
+                content: String,
+            })
+            var selector = this.bodyParams;
+            var defualts = {
+                user: this.userId,
+            };
+            var override = {
+            }
+            return insert.call(this, Feedbacks, selector, defualts, override);
         })
     })
     Restivus.addRoute('rankings/:rankingId?', {}, {
