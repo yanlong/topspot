@@ -1,0 +1,23 @@
+<template name="userList">
+  <div class="posts page">
+    <div class="wrapper">
+      {{#each users}}
+        {{> userListItem}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="userListItem">
+  <div class="topic" id="{{_id}}">
+    <div class="topic-content">
+      <h3><a href="{{pathFor 'topicPage'}}">{{username}}</a></h3>
+      <p>注册时间: {{timestamp2datetime begin}}</p>
+      <p>id: {{_id}}</p>
+      <p>username: {{username}}</p>
+      <p>phone: {{profile.phone}}</p>
+      <p>sex: {{profile.sex}}</p>
+      <p><a target="_blank" href="{{profile.portrait}}">portrait</a></p>
+    </div>
+  </div>
+</template>

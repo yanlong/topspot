@@ -8,16 +8,19 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="{{pathFor 'home'}}">Topspot</a>
+        <a class="navbar-brand" href="{{pathFor 'home'}}">真相帝</a>
       </div>
       <div class="collapse navbar-collapse" id="navigation">
         <ul class="nav navbar-nav">
-          <li class="{{activeRouteClass  'topicList'}}">
-            <a href="{{pathFor 'topicList'}}">My</a>
-          </li>
           {{#if currentUser}}
+            <li class="{{activeRouteClass  'topicList'}}">
+              <a href="{{pathFor 'topicList'}}">话题</a>
+            </li>
+            <li class="{{activeRouteClass  'userList'}}">
+              <a href="{{pathFor 'userList'}}">用户</a>
+            </li>
             <li class="{{activeRouteClass 'topicCreate'}}">
-              <a href="{{pathFor 'topicCreate'}}">Add Topic</a>
+              <a href="{{pathFor 'topicCreate'}}">添加话题</a>
             </li>
           {{/if}}
         </ul>

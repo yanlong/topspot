@@ -23,3 +23,7 @@ Meteor.publish('latestBets', function (topicId, top) {
 Meteor.publish('images', function () {
 	return Images.find();
 })
+
+Meteor.publish('users', function () {
+	return Meteor.users.find();
+})
