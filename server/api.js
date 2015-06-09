@@ -198,7 +198,9 @@ Meteor.startup(function() {
             return rank;
         })
     })
-    Restivus.addRoute('followers', {}, {
+    Restivus.addRoute('followers', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var user = this.queryParams.user || this.userId;
             var selector = {
@@ -220,7 +222,9 @@ Meteor.startup(function() {
             return followers;
         })
     })
-    Restivus.addRoute('following', {}, {
+    Restivus.addRoute('following', {
+        authRequired: useAuth,
+    }, {
         get: resp(function() {
             var user = this.queryParams.user || this.userId;
             var selector = {
