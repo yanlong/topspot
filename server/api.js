@@ -337,7 +337,7 @@ Meteor.startup(function() {
     }, {
         get: resp(function() {
             var selector = {
-                user: this.userId,
+                user: this.queryParams.user || this.userId,
             }
             var query = {
                 attitude: null,
@@ -368,7 +368,7 @@ Meteor.startup(function() {
         authRequired: useAuth,
     }, {
         get: resp(function() {
-            var user = this.userId;
+            var user = this.queryParams.user || this.userId;
             return {
                 scores: total(user) - FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}).fortune.scores,
             };
