@@ -444,6 +444,7 @@ Meteor.startup(function() {
     })
     Restivus.addRoute('rankings/:rankingId?', {}, {
         get: resp(function() {
+            var self = this;
             var query = {
                 type: 1,
                 date: 1,
@@ -453,11 +454,21 @@ Meteor.startup(function() {
             var option = {
                 fields: {list:0},
             }
-            if (this.params.rankingId) {
+            if (this.params.rankingId||this.queryParams.user) {
                 option = null;
             }
             var rank = layerRoute.call(this, Rankings, 'rankingId', {
             }, query, option);
+            if (!this.params.rankingId && this.queryParams.user) {
+                rank.forEach(function (v) {
+                    v.list = _.reduce(v.list, function (memo, v) {
+                        if (v.user == self.queryParams.user) {
+                            memo.push(v);
+                        }
+                        return memo;
+                    }, []);
+                })
+            }
             if (this.params.rankingId) {
                 rank.list = populateUser(rank.list);
             }
