@@ -4,10 +4,11 @@ Meteor.startup(function() {
     if (process.env.SIMULATOR != 'on') return;
     Meteor.setInterval(function () {
         var users = Meteor.users.find().fetch();
+        var count = users.length;
         Topics.find({status: 'open'}, {limit: 1000}).forEach(function (doc) {
             var id = Bets.insert({
                 topic: doc._id,
-                user: users[Math.floor(Math.random() * 1000) % Consts.test.num.user]._id,
+                user: users[Math.floor(Math.random() * 1000) % count]._id,
                 open: Prices.current(doc),
                 attitude: ['postive', 'postive', 'negtive', 'negtive'][Date.now()%4],
                 status: 'open',
