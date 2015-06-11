@@ -374,7 +374,7 @@ Meteor.startup(function() {
         get: resp(function() {
             var user = this.queryParams.user || this.userId;
             return {
-                scores: total(user) - FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}).fortune.scores,
+                scores: todayScores(user),
             };
         })
     })
@@ -642,8 +642,13 @@ function update(collection, id, selector, defualts, override) {
     return collection.findOne(id)
 }
 
-function total(user) {
-    var bets = Bets.find({user: user, status: 'open'}).fetch();
+function total(user, catalog) {
+    var query = {user: user, status: 'open'};
+    if (catalog) {
+        var ids = Topics.find({status:'open', catalog:catalog},{_id:1}).map(function (v) {return v._id;});
+        query.topic = {$in: ids};
+    }
+    var bets = Bets.find(query).fetch();
     bets = populate('topic', bets);
     var floating = _.reduce(bets, function (memo,v) {
         return memo + profit(v, v.topic);
@@ -652,9 +657,12 @@ function total(user) {
     return scores + floating;
 }
 
-function base(user) {
+function base(user, catalog) {
     var u = Meteor.users.findOne(user);
     var scores = u.fortune ? u.fortune.scores : 0;
+    if (catalog) {
+        scores = u.fortune.catalogs[cat] || 0;
+    }
     return scores;
 }
 
@@ -688,8 +696,17 @@ function pullRank(topics) {
     return topics;
 }
 
+function todayScores(user, catalog) {
+    var fortune = FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}) || {catalogs:{}};
+    var last = fortune.scores || 0;
+    if (catalog) {
+        last = fortune.catalogs[catalog] || 0;
+    }
+    return total(user, catalog) - last;
+}
 Api= {
     total: total,
     base: base,
+    todayScores: todayScores,
     profit: profit,
 };

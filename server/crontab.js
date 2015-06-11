@@ -91,10 +91,9 @@ SyncedCron.add({
         Meteor.users.find().forEach(function(user) {
             FortuneHistory.insert({
                 user: user._id,
-                fortune: {
-                    scores: Api.total(user._id),   // total scores, include floating
-                    base: Api.base(user._id),       // base scores in user account
-                },
+                scores: Api.total(user._id),   // total scores, include floating
+                base: Api.base(user._id),       // base scores in user account
+                catalogs: Meteor.users.findOne(user._id).fortune.catalogs || {},
                 date: moment().format('YYYY-MM-DD'),
             })
         })

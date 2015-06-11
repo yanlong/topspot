@@ -12,6 +12,10 @@ function baseRank(bets, top, base) {
             scores: v
         };
     })
+    return _rank(scores,top);
+}
+
+function _rank(scores, top) {
     var tops = _.sortBy(scores, 'scores').reverse()
     tops.map(function(v, index, arr) {
         index += 1;
@@ -21,7 +25,7 @@ function baseRank(bets, top, base) {
         v.real2 = Math.ceil(r/10)*10;
         return v;
     });
-    return tops.slice(0, top);
+    return tops.slice(0, top || tops.length);
 }
 
 function dayRank(time, catalog) {
@@ -94,8 +98,18 @@ function topicRank(topic, top) {
     });
 }
 
+function userDayRank(time, catalog) {
+    var scores = Meteor.users.find().map(function(user) {
+            return {
+                user: user._id,
+                scores: Api.todayScores(user._id, catalog),   // total scores, include floating
+            }
+        })
+    return _rank(scores);
+}
+
 Rank = {
-    day: dayRank,
+    day: userDayRank,
     month: monthRank,
     time: timeRank,
     rank: baseRank,

@@ -136,7 +136,12 @@ function init() {
     Bets.find({status: 'close', settled: {$exists: false}}).observe({
         added: function (bet) {
             Bets.update(bet._id, {$set:{ settled:true}});
-            Meteor.users.update({_id:bet.user}, {$inc: {'fortune.scores': Api.profit(bet)}})
+            var profit = Api.profit(bet);
+            var op = {$inc: {
+                'fortune.scores': profit,
+            }};
+            op['$inc']['fortune.catalogs.'+Topics.findOne(bet.topic).catalog] = profit;
+            Meteor.users.update({_id:bet.user}, op);
         }
     })
     Meteor.users.find({'fortune.scores':{$exists:false}}).observe({
