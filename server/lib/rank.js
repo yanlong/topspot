@@ -99,7 +99,15 @@ function topicRank(topic, top) {
 }
 
 function userDayRank(time, catalog) {
-    var scores = Meteor.users.find().map(function(user) {
+    var users = _.reduce(Meteor.users.find().fetch(), function (memo, v) {
+        var last = Bets.findOne({user: v._id}, {sort:{mtime:-1}}) || {};
+        var towdays = 1000*3600*24*2;
+        if (last.mtime && Date.now() - last.mtime < towdays) {
+            memo.push(v);
+        }
+        return memo;
+    }, [])
+    var scores = users.map(function(user) {
             return {
                 user: user._id,
                 scores: Api.todayScores(user._id, catalog),   // total scores, include floating

@@ -155,24 +155,31 @@ function init() {
         }
     })
     // Calc credits after topic close.
-    Rankings.find({type:'topic', settled:{$exists: false}, isFinal: true}).observe({
+    Rankings.find({$or:[{type:'day',catalog:'总榜'},{type:'topic',isFinal:true}], settled:{$exists:false}}).observe({
         added: function (rank) {
             rank.list.forEach(function (v,k) {
                 var credits = Consts.topicRankMap[v.real-1][3];
+                if (rank.type == 'day' && v.index < 4) {
+                    credits = [100,90,80][v.index-1];
+                }
                 Meteor.users.update(v.user, {$inc: {'fortune.credits': credits}});
                 var c = {
                     user: v.user,
                     ranking: rank._id,
-                    topic: rank.topic,
                     source: rank.type,
                     credits: credits,
                     detail: v,
                     type: 'in',
                 };
+                if (rank.type == 'topic') {
+                    c.topic = rank.topic;
+                } else if(rank.type == 'day') {
+                    c.date = rank.date;
+                }
                 Credits.insert(c);
             })
             Rankings.update(rank._id, {$set: {settled:true}});
-            logger.info('Calc credits done, ranking:', rank._id);
+            logger.info('Calc credits done, ranking:', rank._id, rank.type);
         }
     })
 
