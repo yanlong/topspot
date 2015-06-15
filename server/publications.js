@@ -8,7 +8,7 @@ Meteor.publish('topics', function (selector) {
     var option = {
     	sort: {
     		status: -1,
-    		mtime: -1,
+    		// mtime: -1,
     	}
     }
     return Topics.find(selector,option);
