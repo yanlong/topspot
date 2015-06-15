@@ -5,7 +5,13 @@ Meteor.publish('currentUser', function() {
 Meteor.publish('topics', function (selector) {
     selector = selector ||{};
     selector.user = this.userId;
-    return Topics.find(selector);
+    var option = {
+    	sort: {
+    		status: -1,
+    		mtime: -1,
+    	}
+    }
+    return Topics.find(selector,option);
 })
 
 Meteor.publish('singleTopic', function (id) {
