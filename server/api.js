@@ -72,7 +72,6 @@ Meteor.startup(function() {
         })
     })
     Restivus.addRoute('topics/:topicId/comments/:commentId?', {
-        authRequired: useAuth,
     }, {
         get: resp(function() {
             var query = {
@@ -82,11 +81,13 @@ Meteor.startup(function() {
                 topic: 'topicId'
             }, query);
             var collection = _.isArray(ret) ? ret : [ret];
-            var self = this;
+            var user = authenticate(this);
             collection.forEach(function (v) {
                 v.nFavors = Favors.find({type:'comment', comment:v._id}).count();
-                var favored = Favors.findOne({type:'comment', comment:v._id, user:self.userId});
-                v.favored = favored && favored._id;
+                if (user) {
+                    var favored = Favors.findOne({type:'comment', comment:v._id, user:user._id});
+                    v.favored = favored && favored._id;
+                }
             })
             return ret;
         }),
@@ -381,6 +382,7 @@ Meteor.startup(function() {
     Restivus.addRoute('test/', {}, {
         get: resp(function() {
             // return Rank.day(Date.now());
+            return authenticate(this);
             return moment().format('YYYY-MM-DD');
         })
     })
@@ -703,6 +705,13 @@ function todayScores(user, catalog) {
         last = fortune.catalogs[catalog] || 0;
     }
     return total(user, catalog) - last;
+}
+
+function authenticate(req) {
+    var user = req.request.headers['x-user-id'];
+    var token = req.request.headers['x-auth-token'];
+    var selector = {_id: user, 'services.resume.loginTokens.token':token};
+    return Meteor.users.findOne(selector, {fields:{username:1, profile:1}});
 }
 Api= {
     total: total,
