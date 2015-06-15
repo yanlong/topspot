@@ -10,6 +10,14 @@ Template.topicListItem.events({
             var val = parseInt($(e.target).html());
             Topics.update(this._id, {$set: {status:'close', price: val}});
         }
+    },
+    'click .changePrice': function (e) {
+        e.preventDefault();
+        var changed = parseInt(prompt('输入修改后的价格：', '-97 ~ 97'));
+        console.log(changed);
+        if (!isNaN(changed)) {
+            Topics.update(this._id, {$set: {price: changed}});
+        }
     }
 })
 Template.topicListItem.helpers({

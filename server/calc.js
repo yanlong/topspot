@@ -31,7 +31,7 @@ function compute(topic) {
     }
     logger.trace(newPrice)
     // Prices.insert(newPrice);
-    Topics.update(topic._id, {$set: {price: parseInt(newPrice.price), _NO_MODIFY:true}});
+    Topics.update({_id: topic._id}, {$set: {price: parseInt(newPrice.price), _NO_MODIFY:true}});
 }
 
 function getP(p0, a, b) {
@@ -43,7 +43,7 @@ function getP(p0, a, b) {
     } else {
         xx = x;
     }
-    var p = xx + p0;
+    var p = parseInt(xx) + parseInt(p0);
     if (p > 97) {
         return 97;
     } else if (p < -97) {
@@ -56,6 +56,8 @@ function getX(a, b) {
     if (a + b < 10) {
         return a - b;
     }
+    a = a || 1;
+    b = b || 1;
     var c = a / b;
     if (c > 1) {
         return incr(c);

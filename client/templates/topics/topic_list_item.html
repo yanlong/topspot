@@ -5,19 +5,16 @@
       <h3><a href="{{pathFor 'topicPage'}}">{{title}}</a><span>{{domain}}</span></h3>
       <p>{{timestamp2datetime begin}} ~ {{timestamp2datetime end}}</p>
       <p>分类：{{catalog}}</p>
-      <p>真相值：{{price}}</p>
+      <p>真相值：{{price}} {{#if isOpen}}<a class="changePrice" href="#">Change</a>{{/if}}</p>
       <p>标签：{{tags}}</p>
       <p>状态：{{status}}</p>
+      <!-- operations -->
       <p>
-        <!-- submitted by {{user}}, -->
-        <!-- <a href="{{pathFor 'topicPage'}}">Remove</a> -->
         <a class="remove" href="">Remove</a>
-        <!-- <a class="topic-close" href="">Close</a> -->
         {{#if isOpen}}{{> closeButtons}}{{/if}}
-        {{#if currentUser}}<a href="{{pathFor 'topicEdit'}}">Edit</a>{{/if}}
+        <a href="{{pathFor 'topicEdit'}}">Edit</a>
       </p>
     </div>
-    <!-- <a href="{{pathFor 'topicPage'}}" class="discuss btn btn-default">详情</a> -->
   </div>
 </template>
 
