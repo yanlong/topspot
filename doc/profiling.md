@@ -54,4 +54,4 @@ function updateDayRankings() {
 }
 
 ## profiling data group
-db.system.profile.group({key:{'ns':1,'op':1}, reduce:function (doc, memo) {memo.count++;return memo;},initial: {count:0}}
+db.system.profile.group({key:{'ns':1,'op':1,query:1,$set:1}, reduce:function (doc, memo) {memo.count++;return memo;},initial: {count:0}})

@@ -33,3 +33,7 @@ Meteor.publish('images', function () {
 Meteor.publish('users', function () {
 	return Meteor.users.find();
 })
+
+Meteor.publish('feedbacks', function () {
+	return Feedbacks.find();
+})

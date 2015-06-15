@@ -14,3 +14,7 @@ Template.registerHelper('datetime2timestamp', function(datetime) {
 Template.registerHelper('timestamp2datetime', function(timestamp) {
 	return moment(timestamp).format('YYYY-MM-DDTHH:mm')
 })
+
+Template.registerHelper('userName', function(user) {
+	return Meteor.users.findOne(user).username;
+})

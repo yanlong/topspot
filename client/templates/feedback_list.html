@@ -1,0 +1,24 @@
+<template name="feedbackList">
+  <div class="posts page">
+    <div class="wrapper">
+      {{#each feedbacks}}
+        {{> feedbackListItem}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="feedbackListItem">
+  <div class="topic" id="{{_id}}">
+    <div class="topic-content">
+      <h3><a href="#">{{_id}}</a></h3>
+      <p>用户: {{userName user}}</p>
+      <p>更新时间: {{timestamp2datetime mtime}}</p>
+      <p>version: {{version}}</p>
+      <p>OS: {{os}}</p>
+      <p>device: {{device}}</p>
+      <p>contact: {{contact}}</p>
+      <p>content: {{content}}</p>
+    </div>
+  </div>
+</template>
