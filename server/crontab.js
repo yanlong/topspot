@@ -123,7 +123,7 @@ SyncedCron.add({
             } else if (end && now < end) {
                 after = 'open';
             } else if (end && now >= end) {
-                after = 'close';
+                // after = 'close';
             }
             if (after !== current) {
                 Topics.update(topic._id, {$set: {status: after}});

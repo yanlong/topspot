@@ -23,5 +23,11 @@ Template.topicListItem.events({
 Template.topicListItem.helpers({
     isOpen: function () {
         return this.status !== 'close';
+    },
+    expires: function () {
+        if (this.status == 'open' && Date.now() + 10 * 60 *1000 > this.end) {
+            return 'color:red;';
+        }
+        return '';
     }
 })

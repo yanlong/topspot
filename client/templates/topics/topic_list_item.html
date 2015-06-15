@@ -3,7 +3,7 @@
     <!-- <a href="#" class="upvote btn btn-default {{upvotedClass}}">⬆</a> -->
     <div class="topic-content">
       <h3><a href="{{pathFor 'topicPage'}}">{{title}}</a><span>{{domain}}</span></h3>
-      <p>{{timestamp2datetime begin}} ~ {{timestamp2datetime end}}</p>
+      <p>{{timestamp2datetime begin}} ~ <span style="{{expires}}">{{timestamp2datetime end}}</span></p>
       <p>分类：{{catalog}}</p>
       <p>真相值：{{price}} {{#if isOpen}}<a class="changePrice" href="#">Change</a>{{/if}}</p>
       <p>标签：{{tags}}</p>
