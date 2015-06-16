@@ -302,14 +302,14 @@ Meteor.startup(function() {
                 password: String,
                 code: String,
             })
-            phoneVerify(this.bodyParams.phone, this.bodyParams.code);
+            phoneVerify(this.bodyParams.phone, this.bodyParams.code||100);
             this.bodyParams.profile = {
                 phone: this.bodyParams.phone,
             }
             // check phone number is unique
             var count = Meteor.users.find({'profile.phone': this.bodyParams.phone}).count();
             if (count != 0) {
-                throw new Meteor.Error('Phone not unique');
+                throw new Meteor.Error('Phone already exists.');
             }
             delete this.bodyParams.phone
             return Accounts.createUser(this.bodyParams);
@@ -677,10 +677,20 @@ function profit(bet, topic) {
 
 function resp(fn) {
     return function() {
-        var data = fn.call(this);
-        return {
-            status: 'success',
-            data: data,
+        try {
+            var data = fn.call(this);
+            return {
+                status: 'success',
+                data: data,
+            }
+        } catch (e) {
+            e = e.sanitizedError || e;
+            return {
+                statusCode: 500,
+                body: {
+                    message: !_.isNumber(e.error) ? e.error : (e.reason || e.message) ,
+                }
+            }
         }
     }
 }
