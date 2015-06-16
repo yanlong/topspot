@@ -699,7 +699,8 @@ function pullRank(topics) {
 }
 
 function todayScores(user, catalog) {
-    var fortune = FortuneHistory.findOne({user: user}, {sort: {mtime:-1}}) || {catalogs:{}};
+    var yestoday = moment().subtract(1, 'days').format('YYYY-MM-DD')
+    var fortune = FortuneHistory.findOne({user: user, date:yestoday}, {sort: {mtime:-1}}) || {catalogs:{}};
     var last = fortune.scores || 0;
     if (catalog) {
         last = fortune.catalogs[catalog] || 0;

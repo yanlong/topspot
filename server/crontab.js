@@ -4,7 +4,7 @@ SyncedCron.add({
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
         // return parser.text('every 1 minutes');
-        return parser.text('at 10:00 pm');
+        return parser.text('at 22:00');
     },
     job: function() {
         Consts.catalogList.forEach(function(catalog) {
@@ -85,7 +85,7 @@ SyncedCron.add({
         // parser is a later.parse object
         // return parser.text('every 5 seconds');
         // return parser.text('every 1 minutes'); // every day
-        return parser.text('at 10:00 pm');
+        return parser.text('at 22:00');
     },
     job: function() {
         Meteor.users.find().forEach(function(user) {
