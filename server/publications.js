@@ -35,5 +35,9 @@ Meteor.publish('users', function () {
 })
 
 Meteor.publish('feedbacks', function () {
-	return Feedbacks.find();
+    return Feedbacks.find();
+})
+
+Meteor.publish('bets', function () {
+	return Bets.find();
 })
