@@ -8,7 +8,8 @@ Template.topicEdit.helpers({
 Template.topicEdit.events({
     'submit form': function(e) {
         e.preventDefault();
-        var topic = Topics.findOne(this.data._id);
+        // var topic = Topics.findOne(this.data._id);
+        var topic = {};
         for (var i in Schemas.topic) {
             var v = Schemas.topic[i];
             var value = $(e.target).find('[name=' + v.name + ']').val();
@@ -25,7 +26,7 @@ Template.topicEdit.events({
             topic[v.name] = value;
         }
         topic.user = Meteor.userId();
-        var id = Topics.update(this.data._id, topic);
+        var id = Topics.update(this.data._id, {$set:topic});
         Router.go('topicList');
     }
 })
