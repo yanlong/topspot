@@ -19,7 +19,7 @@ function _rank(scores, top) {
     var tops = _.sortBy(scores, 'scores').reverse()
     tops.map(function(v, index, arr) {
         index += 1;
-        var r = arr.length > 100 ? Math.ceil(index / arr.length * 100) : index;
+        var r =  Math.ceil(index / arr.length * 100);
         v.index = index;
         v.real = r;
         v.real2 = Math.ceil(r/10)*10;

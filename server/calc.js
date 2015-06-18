@@ -157,7 +157,7 @@ function init() {
         }
     })
     // Calc credits after topic close.
-    Rankings.find({$or:[{type:'day',catalog:'总榜'},{type:'topic',isFinal:true}], settled:{$exists:false}}).observe({
+    Rankings.find({$or:[{type:'day',catalog:'总榜'},{type:'TOPIC_RESERVED',isFinal:true}], settled:{$exists:false}}).observe({
         added: function (rank) {
             rank.list.forEach(function (v,k) {
                 var credits = Consts.topicRankMap[v.real-1][3];
