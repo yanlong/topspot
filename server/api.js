@@ -540,7 +540,7 @@ function getAll(collection, selector, query, option) {
     // Support text search
     if (this.queryParams._wd) {
         search = [];
-        var reg = new RegExp(this.queryParams._wd);
+        var reg = new RegExp(this.queryParams._wd, 'i');
         ['title', 'subtitle'].forEach(function (v) {
             var s = {};
             s[v] = reg;
