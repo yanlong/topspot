@@ -55,3 +55,21 @@ function updateDayRankings() {
 
 ## profiling data group
 db.system.profile.group({key:{'ns':1,'op':1}, reduce:function (doc, memo) {memo.count++;return memo;},initial: {count:0}})
+
+## adjust credits
+db.users.find().forEach(function (user) {
+    var total = 0;
+    db.credits.find({user:user._id, type: 'in'}).forEach(function (v) {
+        total += v.credits;
+    })
+    db.users.update({_id:user._id}, {$set: {'fortune.credits': parseInt(total)}}, {multi:true});
+    print(user.username, total, user.fortune.credits)
+})
+
+## fix time
+db.topics.find({begin:{$type:2}}, {title:1, begin:1}).forEach(function (v) {
+    db.topics.update({_id:v._id}, {$set:{
+        begin: new ISODate(v.begin).getTime(),
+        end: new ISODate(v.end).getTime(),
+    }});
+})
