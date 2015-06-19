@@ -15,6 +15,7 @@ SyncedCron.add({
                 date: moment(Date.now()).format('YYYY-MM-DD'),
             })
         })
+        calcFortuneHistory();
         return;
     }
 });
@@ -79,27 +80,30 @@ SyncedCron.add({
     }
 });
 
-SyncedCron.add({
-    name: 'Calc total fortune for user',
-    schedule: function(parser) {
-        // parser is a later.parse object
-        // return parser.text('every 5 seconds');
-        // return parser.text('every 1 minutes'); // every day
-        return parser.text('at 22:00');
-    },
-    job: function() {
-        Meteor.users.find().forEach(function(user) {
-            FortuneHistory.insert({
-                user: user._id,
-                scores: Api.total(user._id),   // total scores, include floating
-                base: Api.base(user._id),       // base scores in user account
-                catalogs: Meteor.users.findOne(user._id).fortune.catalogs || {},
-                date: moment().format('YYYY-MM-DD'),
-            })
+// SyncedCron.add({
+//     name: 'Calc total fortune for user',
+//     schedule: function(parser) {
+//         // parser is a later.parse object
+//         // return parser.text('every 5 seconds');
+//         // return parser.text('every 1 minutes'); // every day
+//         return parser.text('at 22:00');
+//     },
+//     job: function() {
+//         return;
+//     }
+// });
+
+function calcFortuneHistory() {
+    Meteor.users.find().forEach(function(user) {
+        FortuneHistory.insert({
+            user: user._id,
+            scores: Api.total(user._id),   // total scores, include floating
+            base: Api.base(user._id),       // base scores in user account
+            catalogs: Meteor.users.findOne(user._id).fortune.catalogs || {},
+            date: moment().format('YYYY-MM-DD'),
         })
-        return;
-    }
-});
+    })
+}
 
 SyncedCron.add({
     name: 'Topic status watcher',
